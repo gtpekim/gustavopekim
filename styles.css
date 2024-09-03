@@ -1,11 +1,4 @@
-/* Reset básico de estilo */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Estilização básica do corpo */
+/* corpo */
 body {
     font-family: Arial, sans-serif;
     font-size: 20px;
@@ -15,10 +8,10 @@ body {
     margin: 0;
 }
 
-/* Estilização do cabeçalho com fundo sólido */
+/*cabeçalho*/
 header {
-    background-color: #4a90e2; /* Cor de fundo sólida */
-    height: 20vh; /* Altura do cabeçalho como uma porcentagem da altura da viewport */
+    background-color: #4a90e2; 
+    height: 20vh; 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -26,11 +19,11 @@ header {
 }
 
 header h1 {
-    font-size: 3vw; /* Tamanho da fonte em relação à largura da viewport */
+    font-size: 3vw; 
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Estilização do menu de navegação */
+/*menu de navegação */
 nav ul {
     list-style: none;
     text-align: center;
@@ -64,23 +57,23 @@ nav ul li a:hover {
     color: white;
 }
 
-/* Estilização das seções */
+/*seções */
 section {
     background-color: rgba(255, 255, 255, 0.8);
     padding: 20px;
-    margin: 60px auto 20px auto; /* Margem superior para compensar o menu fixo */
-    max-width: 90%; /* Largura máxima de 90% da largura da tela */
+    margin: 60px auto 20px auto; 
+    max-width: 90%;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Estilização do formulário de contato */
+/*formulário de contato */
 form {
-    width: 100%; /* O formulário ocupa toda a largura disponível */
-    max-width: 600px; /* Largura máxima do formulário */
+    width: 100%;
+    max-width: 600px; 
     margin: 0 auto;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.9); /* Transparência no fundo do formulário */
+    background: rgba(255, 255, 255, 0.9); 
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -93,7 +86,7 @@ form label {
 
 form input,
 form textarea {
-    width: calc(100% - 22px); /* Ajusta a largura para compensar o padding */
+    width: calc(100% - 22px); 
     padding: 10px;
     margin-bottom: 15px;
     border: 1px solid #ccc;
@@ -101,8 +94,8 @@ form textarea {
 }
 
 form textarea {
-    resize: vertical; /* Permite redimensionar o textarea verticalmente */
-    min-height: 100px; /* Altura mínima do textarea */
+    resize: vertical; 
+    min-height: 100px; 
 }
 
 form button {
@@ -153,7 +146,7 @@ body.contato-page {
     background-position: center;
 }
 
-/* Melhorar legibilidade do conteúdo em fundo com imagem */
+/*conteúdo em fundo com imagem */
 section {
     background-color: rgba(255, 255, 255, 0.973);
     padding: 20px;
