@@ -115,10 +115,10 @@ form button:hover {
 
 /* Fundo personalizado para páginas */
 
-body.index-page {
-    background-image: url('index-bg.jpg');
+body.index {
+    background-image: url('index-backg.jpg');
     background-size: cover;
-    background-position: center;
+    background-position: auto;
 }
 
 body.sobre-page {
@@ -134,8 +134,8 @@ body.academico-page {
     background-position: 300px 300px;
 }
 
-body.portifolio-page {
-    background-image: url('portifolio-backg.jpg');
+body.portfolio-page {
+    background-image: url('portfolio-backg.jpg');
     background-size: cover;
     background-position: center;
 }
