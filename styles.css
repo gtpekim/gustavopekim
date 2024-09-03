@@ -1,85 +1,85 @@
-/* Reset básico para garantir consistência entre navegadores */
+/* Reset básico de estilo */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Estilo do corpo do documento */
+/* Estilização básica do corpo */
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
-    padding: 0 10px;
+    background-color: #f4f4f4;
+    padding: 20px;
 }
 
-/* Estilo do cabeçalho */
+/* Estilização do cabeçalho */
 header {
-    background: #333;
-    color: #fff;
-    padding: 10px 0;
-    text-align: center;
+    margin-bottom: 20px;
 }
 
 header h1 {
-    margin: 0;
+    color: #333;
+    text-align: center;
 }
 
-header nav ul {
+/* Estilização do menu de navegação */
+nav ul {
     list-style: none;
-    padding: 0;
+    text-align: center;
 }
 
-header nav ul li {
+nav ul li {
     display: inline;
-    margin: 0 10px;
+    margin-right: 15px;
 }
 
-header nav a {
-    color: #fff;
+nav ul li a {
     text-decoration: none;
+    color: #007BFF;
+    font-weight: bold;
 }
 
-/* Estilo das seções */
-section {
-    margin: 20px 0;
+/* Estilização dos links */
+nav a:hover {
+    color: #0056b3;
 }
 
-/* Estilo do formulário */
+/* Estilização do formulário de contato */
 form {
-    display: flex;
-    flex-direction: column;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 form label {
-    margin: 5px 0;
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
 }
 
-form input, form textarea {
-    margin-bottom: 10px;
-    padding: 8px;
-    border: 1px solid #ddd;
+form input,
+form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
     border-radius: 4px;
 }
 
-form input[type="submit"] {
-    background: #333;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    padding: 10px;
-}
-
-form input[type="submit"]:hover {
-    background: #555;
-}
-
-/* Estilo do rodapé */
-footer {
-    text-align: center;
-    padding: 10px 0;
-    background: #333;
-    color: #fff;
-    position: fixed;
+form button {
     width: 100%;
-    bottom: 0;
+    padding: 10px;
+    background: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background: #0056b3;
 }
