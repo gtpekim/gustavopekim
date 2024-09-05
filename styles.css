@@ -3,59 +3,58 @@ body {
     font-family: Arial, sans-serif;
     font-size: 20px;
     line-height: 1.6;
-    background-color: #f4f4f4;
-    padding: 0;
-    margin: 0;
+    background-color: #a35353;
+    
+    
 }
 
 /*cabeçalho*/
 header {
-    background-color: #4a90e2; 
+    background-color: rgba(166, 188, 255, 0.9);; 
     height: 20vh; 
-    display: flex;
+    display:flex;
     justify-content: center;
     align-items: center;
-    color: white;
+    color: rgb(255, 252, 252);
 }
 
 header h1 {
-    font-size: 3vw; 
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    font-size: 4vw;
+    text-shadow: 3px 10px 4px rgba(0, 0, 0, 0.2);
 }
 
-/*menu de navegação */
+/*menu de navegação fixo*/
 nav ul {
-    list-style: none;
+    
     text-align: center;
     margin: 0;
+    top: 0;
     padding: 0;
     position: fixed;
     width: 100%;
-    top: 0;
-    background: rgba(255, 255, 255, 0.9);
-    border-bottom: 1px solid #ccc;
+   
+    background: rgba(35, 86, 240, 0.9);
+    border-bottom: 3px solid #ccc;
 }
 
+/*elementos dos links em linha*/
 nav ul li {
-    display: inline-block;
-    margin: 0;
+    display: inline;
+    
 }
 
+/*formatação dos links*/
 nav ul li a {
     text-decoration: none;
     color: #007BFF;
     font-weight: bold;
-    font-size: 1rem;
-    padding: 15px;
+    font-size: 1.5vw;
+    padding: 10px;
+    border-style:double;
     border-radius: 5px;
     background-color: white;
-    transition: background-color 0.3s;
 }
 
-nav ul li a:hover {
-    background-color: #0056b3;
-    color: white;
-}
 
 /*seções */
 section {
@@ -68,7 +67,7 @@ section {
 }
 
 /*formulário de contato */
-form {
+/*form {
     width: 100%;
     max-width: 600px; 
     margin: 0 auto;
@@ -127,13 +126,6 @@ body.sobre-page {
     background-position: center;
 }
 
-body.academico-page {
-    background-image: url('academico-backg.jpg');
-    background-size: 1000px 500px;
-    background-repeat: no-repeat;
-    background-position: 300px 300px;
-}
-
 body.portfolio-page {
     background-image: url('portfolio-backg.jpg');
     background-size: cover;
@@ -149,10 +141,26 @@ body.contato-page {
 /*conteúdo em fundo com imagem */
 section {
     background-color: rgba(255, 255, 255, 0.973);
-    padding: 20px;
+    padding: 5px;
     border-radius: 8px;
-    margin: 20px auto;
-    max-width: 800px;
+    margin: 10px auto;
+    max-width:90%;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
+#sobre {
+    background-color: rgba(255, 255, 255, 0.973);
+    padding: 5px;
+    border-radius: 8px;
+    margin: 10px auto;
+    max-width:60%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+#academico {
+    width: 50%;
+    height: 50%;    
+    border-radius: 10px;
+}
