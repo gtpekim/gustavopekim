@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML to Sheets</title>
+       <script src="https://cdn.tailwindcss.com" defer></script>
+</head>
+<body>
+       
+
+        <form id="form">
+  
+       
+          
+            <label class="field-label" for="email">Name</label>
+            <input type="text" name="Name" id="email">
+          
+          
+            <label class="field-label" for="message">Message</label>
+            <textarea type="text" name="Message" id="Message"></textarea>
+          
+
+          <input type="date" name="Time" id="">
+          <input type="checkbox" name="Check" value="true" id="">
+          <button type="submit" id="submit">Submit</button>
+        </form>
+    </div>
+  </div>
+
+</body>
+
+<script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwOTZ4arZMSRb3iAP9hh-k8Zk0X4p0Zc4ozfmTJWPagXKbTYQ3T0wjVIq2e7g6zXijQSw/exec'
+    const form = document.querySelector('#form')
+    const btn = document.querySelector('#submit')
+
+
+    form.addEventListener('submit', e => {
+      e.preventDefault()
+      btn.disabled = true
+      btn.innerHTML = "Loading..."
+
+      console.log(form)
+      fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+        .then(response => { 
+              btn.disabled = false
+      btn.innerHTML = "Submit"
+            alert('Success!', response) })
+        .catch(error => {
+                     btn.disabled = false
+      btn.innerHTML = "Submit"
+            alert('Error!', error.message)})
+    })
+</script>
+</html>
