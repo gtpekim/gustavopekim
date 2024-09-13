@@ -17,6 +17,7 @@
         
         <label class="field-label" for="barcode">Barcode</label>
         <input type="text" name="Barcode" id="barcode" readonly>
+        <button type="button" id="start-scan">Start Scan</button>
         <div id="interactive" class="viewport"></div>
         
         <input type="date" name="Time" id="time">
@@ -29,6 +30,7 @@
         const form = document.querySelector('#form');
         const btn = document.querySelector('#submit');
         const barcodeInput = document.querySelector('#barcode');
+        const startScanBtn = document.querySelector('#start-scan');
 
         form.addEventListener('submit', e => {
             e.preventDefault();
@@ -48,21 +50,23 @@
                 });
         });
 
-        Quagga.init({
-            inputStream: {
-                name: "Live",
-                type: "LiveStream",
-                target: document.querySelector('#interactive')
-            },
-            decoder: {
-                readers: ["code_128_reader"]
-            }
-        }, function (err) {
-            if (err) {
-                console.log(err);
-                return;
-            }
-            Quagga.start();
+        startScanBtn.addEventListener('click', () => {
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.querySelector('#interactive')
+                },
+                decoder: {
+                    readers: ["code_128_reader"]
+                }
+            }, function (err) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                Quagga.start();
+            });
         });
 
         Quagga.onDetected(function (data) {
