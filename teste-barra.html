@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leitor de Código de Barras</title>
+    <style>
+        #interactive {
+            position: relative;
+            width: 100%;
+            height: 240px;
+            margin: 0 auto;
+        }
+        #interactive video {
+            width: 100%;
+            height: 100%;
+        }
+        #interactive canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Leitor de Código de Barras</h1>
+    <div id="interactive" class="viewport"></div>
+    <button id="stop-btn">Parar Leitura</button>
+    <p id="result">Códigos Lidos: Nenhum</p>
+
+    <!-- Incluindo QuaggaJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+
+    <script>
+        const result = document.getElementById('result');
+
+        // Iniciar a captura de vídeo e leitura do código de barras
+        function startScanner() {
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.querySelector('#interactive'), // Elemento HTML onde o vídeo será exibido
+                    constraints: {
+                        width: 640,
+                        height: 480,
+                        facingMode: "environment" // Usa a câmera traseira
+                    },
+                },
+                decoder: {
+                    readers: ["code_128_reader", "ean_reader", "ean_8_reader", "code_39_reader", "upc_reader", "upc_e_reader"] // Tipos de códigos de barras que serão lidos
+                },
+            }, function(err) {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                Quagga.start();
+            });
+
+            // Captura de código de barras quando detectado
+            Quagga.onDetected(function(data) {
+                const code = data.codeResult.code;
+                result.textContent = `Código de Barras Lido: ${code}`;
+                stopScanner(); // Para após ler o código
+            });
+        }
+
+        // Função para parar a leitura
+        function stopScanner() {
+            Quagga.stop();
+        }
+
+        // Botão para parar manualmente
+        document.getElementById('stop-btn').addEventListener('click', stopScanner);
+
+        // Iniciar scanner ao carregar a página
+        startScanner();
+    </script>
+</body>
+</html>
