@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML to Sheets</title>
+    <script src="https://serratus.github.io/quaggaJS/dist/quagga.min.js"></script>
+</head>
+<body>
+    <form id="form">
+        <label class="field-label" for="name">Name</label>
+        <input type="text" name="Name" id="name">
+        
+        <label class="field-label" for="message">Message</label>
+        <textarea name="Message" id="message"></textarea>
+        
+        <label class="field-label" for="barcode">Barcode</label>
+        <input type="text" name="Barcode" id="barcode" readonly>
+        <div id="interactive" class="viewport"></div>
+        
+        <input type="date" name="Time" id="time">
+        <input type="checkbox" name="Check" value="true" id="check">
+        <button type="submit" id="submit">Submit</button>
+    </form>
+
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwOTZ4arZMSRb3iAP9hh-k8Zk0X4p0Zc4ozfmTJWPagXKbTYQ3T0wjVIq2e7g6zXijQSw/exec';
+        const form = document.querySelector('#form');
+        const btn = document.querySelector('#submit');
+        const barcodeInput = document.querySelector('#barcode');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            btn.disabled = true;
+            btn.innerHTML = "Loading...";
+
+            fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+                .then(response => {
+                    btn.disabled = false;
+                    btn.innerHTML = "Submit";
+                    alert('Success!', response);
+                })
+                .catch(error => {
+                    btn.disabled = false;
+                    btn.innerHTML = "Submit";
+                    alert('Error!', error.message);
+                });
+        });
+
+        Quagga.init({
+            inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                target: document.querySelector('#interactive')
+            },
+            decoder: {
+                readers: ["code_128_reader"]
+            }
+        }, function (err) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            Quagga.start();
+        });
+
+        Quagga.onDetected(function (data) {
+            barcodeInput.value = data.codeResult.code;
+            Quagga.stop();
+        });
+    </script>
+</body>
+</html>
