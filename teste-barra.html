@@ -39,7 +39,7 @@
         const detectedCodes = new Set(); // Armazenar códigos EAN-13 únicos
 
         // Função para validar o EAN-13 com base no dígito verificador
-        function validateEAN13(code) {
+        /*function validateEAN13(code) {
             if (code.length !== 13) return false;
             const digits = code.split('').map(Number);
             const checksum = digits.slice(0, 12).reduce((sum, digit, idx) => {
@@ -47,7 +47,7 @@
             }, 0);
             const checkDigit = (10 - (checksum % 10)) % 10;
             return checkDigit === digits[12];
-        }
+        }*/
 
         // Iniciar a captura de vídeo e leitura de código de barras (apenas EAN-13)
         function startScanner() {
@@ -81,14 +81,14 @@
             // Quando o código de barras for detectado
             Quagga.onDetected(function(data) {
                 const code = data.codeResult.code;
-                if (validateEAN13(code)) { // Validação com o dígito verificador EAN-13
+            
                     if (!detectedCodes.has(code)) { // Verifica se o código já foi adicionado
                         addCodeToList(code); // Adiciona uma linha no HTML
                         detectedCodes.add(code); // Adiciona o código ao conjunto
                     } else {
                         console.log(`Código ${code} já foi detectado.`);
                     }
-                } else {
+                 else {
                     console.warn(`Código inválido detectado: ${code}`);
                 }
             });
