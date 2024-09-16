@@ -26,6 +26,10 @@
             display: none; /* Esconder inicialmente */
             margin-top: 20px;
         }
+        #sequence-section {
+            display: none; /* Esconder inicialmente */
+            margin-top: 20px;
+        }
         .code-item {
             display: flex;
             justify-content: space-between;
@@ -53,9 +57,18 @@
         <h2>Adicionar Código Manualmente:</h2>
         <form id="manual-code-form">
             <label for="manual-code-input">Código:</label>
-            <!-- Alteração no input para garantir 12 dígitos -->
-            <input type="number" id="manual-code-input" maxlength="12" pattern="\\d{12}" title="Insira exatamente 12 dígitos" required>
+            <input type="number" id="manual-code-input" pattern="\\d{12}" maxlength="12" minlength="12" title="Insira exatamente 12 dígitos" required>
             <button type="submit">Adicionar Código</button>
+        </form>
+    </div>
+
+    <!-- Seção para inserir a sequência -->
+    <div id="sequence-section">
+        <h2>Inserir Sequência:</h2>
+        <form id="sequence-form">
+            <label for="sequence-input">Sequência (separada por vírgulas):</label>
+            <input type="number" id="sequence-input" required>
+            <button type="submit">Adicionar Sequência</button>
         </form>
     </div>
 
@@ -69,6 +82,7 @@
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyHc4lwNrsUqoOqciXDvL-9v0rmc1Hky-7Zry_GNU-ij5a09ghRaKAzPQWENhGoN43BaQ/exec'; // Substitua pela URL do Apps Script
 
         let validCodes = new Set(); // Armazenar os códigos válidos da planilha
+        let manualCode = ''; // Armazenar o código manual inserido
 
         // Função para buscar os códigos da planilha via Apps Script
         async function fetchValidCodes() {
@@ -197,16 +211,49 @@
             const code = manualCodeInput.value.trim();
 
             if (code.length === 12 && !validCodes.has(code)) { // Verifica se o código tem 12 dígitos
-                validCodes.add(code); // Adiciona o código à lista de válidos
-                addCodeToList(code); // Adiciona o código à lista de códigos lidos
+                manualCode = code; // Armazena o código inserido
+                showSequenceSection(); // Mostra a seção de sequência
                 manualCodeInput.value = ''; // Limpa o campo de entrada
             } else {
                 alert("Insira um código de 12 dígitos.");
             }
         }
 
-        // Adiciona evento de submissão ao formulário
+        // Função para mostrar a seção de sequência
+        function showSequenceSection() {
+            const sequenceSection = document.getElementById('sequence-section');
+            sequenceSection.style.display = 'block'; // Exibe a seção de sequência
+        }
+
+        // Função para adicionar sequência manualmente
+        function addSequence(event) {
+            event.preventDefault();
+
+            const sequenceInput = document.getElementById('sequence-input');
+            const sequence = sequenceInput.value.split(',').map(item => item.trim());
+
+            const validSequence = sequence.map(num => num.padStart(4, '0')); // Garante 4 dígitos com zeros à esquerda
+
+            validSequence.forEach(seq => {
+                const fullCode = `${manualCode}-${seq}`;
+                addCodeToList(fullCode); // Adiciona o código completo à lista
+            });
+
+            sequenceInput.value = ''; // Limpa o campo de sequência
+            hideSequenceSection(); // Esconde a seção de sequência após adicionar
+        }
+
+        // Função para esconder a seção de sequência
+        function hideSequenceSection() {
+            const sequenceSection = document.getElementById('sequence-section');
+            sequenceSection.style.display = 'none';
+        }
+
+        // Adiciona evento de submissão ao formulário de código manual
         document.getElementById('manual-code-form').addEventListener('submit', addManualCode);
+
+        // Adiciona evento de submissão ao formulário de sequência
+        document.getElementById('sequence-form').addEventListener('submit', addSequence);
 
         // Adiciona evento de clique ao botão de mostrar o formulário
         document.getElementById('show-manual-form-btn').addEventListener('click', function() {
