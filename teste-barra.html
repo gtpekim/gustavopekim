@@ -235,7 +235,7 @@
             const validSequence = sequence.map(num => num.padStart(4, '0')); // Garante 4 dígitos com zeros à esquerda
 
             validSequence.forEach(seq => {
-                const fullCode = `${manualCode}-${seq}`;
+                const fullCode = `${manualCode}${seq}`; // Concatena código e sequência
                 addCodeToList(fullCode); // Adiciona o código completo à lista
             });
 
