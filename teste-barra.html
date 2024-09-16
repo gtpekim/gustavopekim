@@ -54,7 +54,7 @@
         <form id="manual-code-form">
             <label for="manual-code-input">Código:</label>
             <!-- Alteração no input para garantir 12 dígitos -->
-            <input type="text" id="manual-code-input" pattern="\\d{12}" title="Insira exatamente 12 dígitos" required>
+            <input type="number" id="manual-code-input" maxlength="12" pattern="\\d{12}" title="Insira exatamente 12 dígitos" required>
             <button type="submit">Adicionar Código</button>
         </form>
     </div>
