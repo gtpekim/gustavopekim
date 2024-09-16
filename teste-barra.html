@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leitor de Código de Barras (Todos os Padrões)</title>
+    <title>Leitor de Código de Barras (Code 128)</title>
     <style>
         #interactive {
             position: relative;
@@ -25,7 +25,7 @@
     </style>
 </head>
 <body>
-    <h1>Leitor de Código de Barras (Todos os Padrões)</h1>
+    <h1>Leitor de Código de Barras (Code 128)</h1>
     <div id="interactive" class="viewport"></div>
     <button id="stop-btn">Parar Leitura</button>
     <h2>Códigos Lidos:</h2>
@@ -36,14 +36,14 @@
 
     <script>
         const resultList = document.getElementById('result-list');
-        const detectedCodes = new Set(); // Armazenar códigos únicos
+        const detectedCodes = new Set(); // Armazenar códigos Code 128 únicos
 
-        // Função para validar o código (não estamos implementando validação adicional neste exemplo)
-        function validateCode(code) {
-            return true; // Considera todos os códigos válidos
+        // Função para validar o código (Code 128)
+        function validateCode128(code) {
+            return true; // Considera todos os códigos Code 128 como válidos
         }
 
-        // Iniciar a captura de vídeo e leitura de código de barras (aceitar todos os padrões)
+        // Iniciar a captura de vídeo e leitura de código de barras (apenas Code 128)
         function startScanner() {
             Quagga.init({
                 inputStream: {
@@ -57,19 +57,7 @@
                     },
                 },
                 decoder: {
-                    readers: [
-                        "code_128_reader", // Code 128
-                        "ean_reader",      // EAN-13
-                        "ean_8_reader",    // EAN-8
-                        "code_39_reader",  // Code 39
-                        "code_39_vin_reader", // Code 39 VIN
-                        "codabar_reader",  // Codabar
-                        "upc_reader",      // UPC-A
-                        "upc_e_reader",    // UPC-E
-                        "i2of5_reader",    // Interleaved 2 of 5
-                        "2of5_reader",     // Standard 2 of 5
-                        "code_93_reader"   // Code 93
-                    ]
+                    readers: ["code_128_reader"] // Aceitar apenas Code 128
                 },
                 locate: true, // Tentar localizar o código de barras na imagem
                 locator: {
@@ -87,11 +75,10 @@
             // Quando o código de barras for detectado
             Quagga.onDetected(function(data) {
                 const code = data.codeResult.code;
-                const format = data.codeResult.format; // Formato detectado (padrão)
 
-                if (validateCode(code)) { // Validação do código (sem validação adicional)
+                if (validateCode128(code)) { // Validação do código (Code 128)
                     if (!detectedCodes.has(code)) { // Verifica se o código já foi adicionado
-                        addCodeToList(code, format); // Adiciona uma linha no HTML com o formato
+                        addCodeToList(code); // Adiciona uma linha no HTML
                         detectedCodes.add(code); // Adiciona o código ao conjunto
                     } else {
                         console.log(`Código ${code} já foi detectado.`);
@@ -102,10 +89,10 @@
             });
         }
 
-        // Função para adicionar o código lido e o formato à lista no HTML
-        function addCodeToList(code, format) {
+        // Função para adicionar o código lido à lista no HTML
+        function addCodeToList(code) {
             const li = document.createElement('li');
-            li.textContent = `Código Lido: ${code} (Formato: ${format})`;
+            li.textContent = `Código Code 128 Lido: ${code}`;
             resultList.appendChild(li);
         }
 
