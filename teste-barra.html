@@ -57,7 +57,7 @@
         <h2>Adicionar Código Manualmente:</h2>
         <form id="manual-code-form">
             <label for="manual-code-input">Código:</label>
-            <input type="number" id="manual-code-input" pattern="\\d{12}" maxlength="12" minlength="12" title="Insira exatamente 12 dígitos" required>
+            <input type="number" id="manual-code-input" min="0" max="999999999999" maxlength="12" required>
             <button type="submit">Adicionar Código</button>
         </form>
     </div>
@@ -67,7 +67,7 @@
         <h2>Inserir Sequência:</h2>
         <form id="sequence-form">
             <label for="sequence-input">Sequência (separada por vírgulas):</label>
-            <input type="number" id="sequence-input" required>
+            <input type="text" id="sequence-input" required>
             <button type="submit">Adicionar Sequência</button>
         </form>
     </div>
@@ -208,14 +208,14 @@
             event.preventDefault(); // Evita o envio do formulário
 
             const manualCodeInput = document.getElementById('manual-code-input');
-            const code = manualCodeInput.value.trim();
+            let code = manualCodeInput.value.trim();
 
-            if (code.length === 12 && !validCodes.has(code)) { // Verifica se o código tem 12 dígitos
+            if (code.length === 12 && !isNaN(code) && !validCodes.has(code)) { // Verifica se o código tem 12 dígitos e é numérico
                 manualCode = code; // Armazena o código inserido
                 showSequenceSection(); // Mostra a seção de sequência
                 manualCodeInput.value = ''; // Limpa o campo de entrada
             } else {
-                alert("Insira um código de 12 dígitos.");
+                alert("Insira um código de 12 dígitos numéricos.");
             }
         }
 
