@@ -40,13 +40,13 @@
     <h2>Códigos Válidos Lidos:</h2>
     <ul id="result-list"></ul>
 
-    <!-- Seção para inserir códigos manualmente -->
+   <!-- Seção para inserir códigos manualmente -->
     <div id="manual-code-section">
         <h2>Adicionar Código Manualmente:</h2>
         <form id="manual-code-form">
             <label for="manual-code-input">Código:</label>
-            <input type="text" id="manual-code-input" required>
-            <button type="submit">Adicionar Código</button>
+            <input type="text" id="manual-code-input" placeholder="12 dígitos" required>
+            <button type="button" id="manual-code-submit-btn">Adicionar Código</button>
         </form>
     </div>
 
@@ -60,6 +60,9 @@
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyHc4lwNrsUqoOqciXDvL-9v0rmc1Hky-7Zry_GNU-ij5a09ghRaKAzPQWENhGoN43BaQ/exec'; // Substitua pela URL do Apps Script
 
         let validCodes = new Set(); // Armazenar os códigos válidos da planilha
+
+        const resultList = document.getElementById('result-list');
+        const detectedCodes = new Set(); // Armazenar códigos válidos lidos
 
         // Função para buscar os códigos da planilha via Apps Script
         async function fetchValidCodes() {
@@ -98,6 +101,12 @@
         // Função para validar o código com a lista de códigos da planilha
         function validateCode128(code) {
             return validCodes.has(code); // Verifica se o código está na lista de válidos
+        }
+
+        // Função para validar o código manualmente
+        function isValidManualCode(code) {
+            const regex = /^[0-9]{12}$/; // Exigir 12 números exatos
+            return regex.test(code);
         }
 
         // Função para tocar o som de bip
@@ -153,11 +162,24 @@
             });
         }
 
-        // Função para adicionar o código lido à lista no HTML
+       // Função para adicionar o código lido à lista no HTML
         function addCodeToList(code) {
             const li = document.createElement('li');
-            li.textContent = `Código Code 128 Válido Lido: ${code}`;
+            li.className = 'code-item';
+            li.innerHTML = `
+                Código Completo: ${code}
+                <button onclick="removeCode('${code}')">Excluir</button>
+            `;
             resultList.appendChild(li);
+        }
+
+        // Função para remover um código da lista
+        function removeCode(code) {
+            const listItem = Array.from(resultList.getElementsByTagName('li')).find(item => item.textContent.includes(code));
+            if (listItem) {
+                resultList.removeChild(listItem);
+            }
+            detectedCodes.delete(code);
         }
 
         // Função para parar o scanner
@@ -222,6 +244,21 @@
             }
         }
 
+         // Ação ao clicar no botão para inserir código manual
+        document.getElementById('manual-code-submit-btn').addEventListener('click', function() {
+            const manualCodeInput = document.getElementById('manual-code-input');
+            const code = manualCodeInput.value.trim();
+
+            if (isValidManualCode(code)) {
+                promptVolumeSequence(code); // Solicitar sequência de volumes
+                manualCodeInput.value = ''; // Limpar o campo
+            } else {
+                alert("Por favor, insira um código de 12 dígitos numéricos.");
+            }
+        });
+
+        
+
         // Adiciona evento de submissão ao formulário
         document.getElementById('manual-code-form').addEventListener('submit', addManualCode);
 
@@ -234,8 +271,15 @@
         // Botão para parar manualmente
         document.getElementById('stop-btn').addEventListener('click', stopScanner);
 
+              // Botão para mostrar o formulário de inserção manual
+        document.getElementById('show-manual-form-btn').addEventListener('click', function() {
+            const manualCodeSection = document.getElementById('manual-code-section');
+            manualCodeSection.style.display = 'block'; // Mostra a seção do formulário
+        });
+
         // Iniciar scanner ao carregar a página
         startScanner();
+       
     </script>
 </body>
 </html>
