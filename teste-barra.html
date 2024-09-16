@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leitor de Código de Barras</title>
+    <title>Leitor de Código de Barras (Todos os Padrões)</title>
     <style>
         #interactive {
             position: relative;
@@ -25,33 +25,57 @@
     </style>
 </head>
 <body>
-    <h1>Leitor de Código de Barras</h1>
+    <h1>Leitor de Código de Barras (Todos os Padrões)</h1>
     <div id="interactive" class="viewport"></div>
     <button id="stop-btn">Parar Leitura</button>
-    <p id="result">Códigos Lidos: Nenhum</p>
+    <h2>Códigos Lidos:</h2>
+    <ul id="result-list"></ul>
 
     <!-- Incluindo QuaggaJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 
     <script>
-        const result = document.getElementById('result');
+        const resultList = document.getElementById('result-list');
+        const detectedCodes = new Set(); // Armazenar códigos únicos
 
-        // Iniciar a captura de vídeo e leitura do código de barras
+        // Função para validar o código (não estamos implementando validação adicional neste exemplo)
+        function validateCode(code) {
+            return true; // Considera todos os códigos válidos
+        }
+
+        // Iniciar a captura de vídeo e leitura de código de barras (aceitar todos os padrões)
         function startScanner() {
             Quagga.init({
                 inputStream: {
                     name: "Live",
                     type: "LiveStream",
-                    target: document.querySelector('#interactive'), // Elemento HTML onde o vídeo será exibido
+                    target: document.querySelector('#interactive'),
                     constraints: {
                         width: 640,
                         height: 480,
-                        facingMode: "environment" // Usa a câmera traseira
+                        facingMode: "environment"
                     },
                 },
                 decoder: {
-                    readers: ["code_128_reader", "ean_reader", "ean_8_reader", "code_39_reader", "upc_reader", "upc_e_reader"] // Tipos de códigos de barras que serão lidos
+                    readers: [
+                        "code_128_reader", // Code 128
+                        "ean_reader",      // EAN-13
+                        "ean_8_reader",    // EAN-8
+                        "code_39_reader",  // Code 39
+                        "code_39_vin_reader", // Code 39 VIN
+                        "codabar_reader",  // Codabar
+                        "upc_reader",      // UPC-A
+                        "upc_e_reader",    // UPC-E
+                        "i2of5_reader",    // Interleaved 2 of 5
+                        "2of5_reader",     // Standard 2 of 5
+                        "code_93_reader"   // Code 93
+                    ]
                 },
+                locate: true, // Tentar localizar o código de barras na imagem
+                locator: {
+                    halfSample: true,
+                    patchSize: "medium", // Opções: x-small, small, medium, large, x-large
+                }
             }, function(err) {
                 if (err) {
                     console.error(err);
@@ -60,15 +84,32 @@
                 Quagga.start();
             });
 
-            // Captura de código de barras quando detectado
+            // Quando o código de barras for detectado
             Quagga.onDetected(function(data) {
                 const code = data.codeResult.code;
-                result.textContent = `Código de Barras Lido: ${code}`;
-                stopScanner(); // Para após ler o código
+                const format = data.codeResult.format; // Formato detectado (padrão)
+
+                if (validateCode(code)) { // Validação do código (sem validação adicional)
+                    if (!detectedCodes.has(code)) { // Verifica se o código já foi adicionado
+                        addCodeToList(code, format); // Adiciona uma linha no HTML com o formato
+                        detectedCodes.add(code); // Adiciona o código ao conjunto
+                    } else {
+                        console.log(`Código ${code} já foi detectado.`);
+                    }
+                } else {
+                    console.warn(`Código inválido detectado: ${code}`);
+                }
             });
         }
 
-        // Função para parar a leitura
+        // Função para adicionar o código lido e o formato à lista no HTML
+        function addCodeToList(code, format) {
+            const li = document.createElement('li');
+            li.textContent = `Código Lido: ${code} (Formato: ${format})`;
+            resultList.appendChild(li);
+        }
+
+        // Função para parar o scanner
         function stopScanner() {
             Quagga.stop();
         }
