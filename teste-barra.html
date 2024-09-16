@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leitor de Código de Barras (2 of 5)</title>
+    <title>Leitor de Código de Barras</title>
     <style>
         #interactive {
             position: relative;
@@ -25,46 +25,33 @@
     </style>
 </head>
 <body>
-    <h1>Leitor de Código de Barras (2 of 5)</h1>
+    <h1>Leitor de Código de Barras</h1>
     <div id="interactive" class="viewport"></div>
     <button id="stop-btn">Parar Leitura</button>
-    <h2>Códigos Lidos:</h2>
-    <ul id="result-list"></ul>
+    <p id="result">Códigos Lidos: Nenhum</p>
 
     <!-- Incluindo QuaggaJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 
     <script>
-        const resultList = document.getElementById('result-list');
-        const detectedCodes = new Set(); // Armazenar códigos 2 of 5 únicos
+        const result = document.getElementById('result');
 
-        // Função para validar o código de barras 2 of 5 (Opcional, caso tenha padrão específico)
-        function validate2of5(code) {
-            // Você pode adicionar validação específica para o formato aqui, se necessário
-            return true; // Considera todos os códigos 2 of 5 como válidos
-        }
-
-        // Iniciar a captura de vídeo e leitura de código de barras (padrão 2 of 5)
+        // Iniciar a captura de vídeo e leitura do código de barras
         function startScanner() {
             Quagga.init({
                 inputStream: {
                     name: "Live",
                     type: "LiveStream",
-                    target: document.querySelector('#interactive'),
+                    target: document.querySelector('#interactive'), // Elemento HTML onde o vídeo será exibido
                     constraints: {
                         width: 640,
                         height: 480,
-                        facingMode: "environment"
+                        facingMode: "environment" // Usa a câmera traseira
                     },
                 },
                 decoder: {
-                    readers: ["interleaved_2of5_reader"] // Configurar para Interleaved 2 of 5
+                    readers: ["code_128_reader", "ean_reader", "ean_8_reader", "code_39_reader", "upc_reader", "upc_e_reader"] // Tipos de códigos de barras que serão lidos
                 },
-                locate: true, // Tentar localizar o código de barras na imagem
-                locator: {
-                    halfSample: true,
-                    patchSize: "medium", // Opções: x-small, small, medium, large, x-large
-                }
             }, function(err) {
                 if (err) {
                     console.error(err);
@@ -73,30 +60,15 @@
                 Quagga.start();
             });
 
-            // Quando o código de barras for detectado
+            // Captura de código de barras quando detectado
             Quagga.onDetected(function(data) {
                 const code = data.codeResult.code;
-                if (validate2of5(code)) { // Validação opcional para código 2 of 5
-                    if (!detectedCodes.has(code)) { // Verifica se o código já foi adicionado
-                        addCodeToList(code); // Adiciona uma linha no HTML
-                        detectedCodes.add(code); // Adiciona o código ao conjunto
-                    } else {
-                        console.log(`Código ${code} já foi detectado.`);
-                    }
-                } else {
-                    console.warn(`Código inválido detectado: ${code}`);
-                }
+                result.textContent = `Código de Barras Lido: ${code}`;
+                stopScanner(); // Para após ler o código
             });
         }
 
-        // Função para adicionar o código lido à lista no HTML
-        function addCodeToList(code) {
-            const li = document.createElement('li');
-            li.textContent = `Código 2 of 5 Lido: ${code}`;
-            resultList.appendChild(li);
-        }
-
-        // Função para parar o scanner
+        // Função para parar a leitura
         function stopScanner() {
             Quagga.stop();
         }
