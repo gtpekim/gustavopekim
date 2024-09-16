@@ -53,7 +53,8 @@
         <h2>Adicionar Código Manualmente:</h2>
         <form id="manual-code-form">
             <label for="manual-code-input">Código:</label>
-            <input type="number" id="manual-code-input" required>
+            <!-- Alteração no input para garantir 12 dígitos -->
+            <input type="text" id="manual-code-input" pattern="\\d{12}" title="Insira exatamente 12 dígitos" required>
             <button type="submit">Adicionar Código</button>
         </form>
     </div>
@@ -195,10 +196,12 @@
             const manualCodeInput = document.getElementById('manual-code-input');
             const code = manualCodeInput.value.trim();
 
-            if (code && !validCodes.has(code)) {
+            if (code.length === 12 && !validCodes.has(code)) { // Verifica se o código tem 12 dígitos
                 validCodes.add(code); // Adiciona o código à lista de válidos
                 addCodeToList(code); // Adiciona o código à lista de códigos lidos
                 manualCodeInput.value = ''; // Limpa o campo de entrada
+            } else {
+                alert("Insira um código de 12 dígitos.");
             }
         }
 
