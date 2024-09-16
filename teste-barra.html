@@ -26,6 +26,14 @@
             display: none; /* Esconder inicialmente */
             margin-top: 20px;
         }
+        .code-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .code-item button {
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -40,18 +48,18 @@
     <h2>Códigos Válidos Lidos:</h2>
     <ul id="result-list"></ul>
 
-   <!-- Seção para inserir códigos manualmente -->
+    <!-- Seção para inserir códigos manualmente -->
     <div id="manual-code-section">
         <h2>Adicionar Código Manualmente:</h2>
         <form id="manual-code-form">
             <label for="manual-code-input">Código:</label>
-            <input type="text" id="manual-code-input" placeholder="12 dígitos" required>
-            <button type="button" id="manual-code-submit-btn">Adicionar Código</button>
+            <input type="text" id="manual-code-input" required>
+            <button type="submit">Adicionar Código</button>
         </form>
     </div>
 
     <!-- Elemento de áudio para o som de bip -->
-    <audio id="beep-sound" src="" preload="auto"></audio>
+    <audio id="beep-sound" src="caminho/para/seu/arquivo-de-bip.wav" preload="auto"></audio>
 
     <!-- Incluindo QuaggaJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
@@ -60,9 +68,6 @@
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyHc4lwNrsUqoOqciXDvL-9v0rmc1Hky-7Zry_GNU-ij5a09ghRaKAzPQWENhGoN43BaQ/exec'; // Substitua pela URL do Apps Script
 
         let validCodes = new Set(); // Armazenar os códigos válidos da planilha
-
-        const resultList = document.getElementById('result-list');
-        const detectedCodes = new Set(); // Armazenar códigos válidos lidos
 
         // Função para buscar os códigos da planilha via Apps Script
         async function fetchValidCodes() {
@@ -101,12 +106,6 @@
         // Função para validar o código com a lista de códigos da planilha
         function validateCode128(code) {
             return validCodes.has(code); // Verifica se o código está na lista de válidos
-        }
-
-        // Função para validar o código manualmente
-        function isValidManualCode(code) {
-            const regex = /^[0-9]{12}$/; // Exigir 12 números exatos
-            return regex.test(code);
         }
 
         // Função para tocar o som de bip
@@ -162,12 +161,12 @@
             });
         }
 
-       // Função para adicionar o código lido à lista no HTML
+        // Função para adicionar o código lido à lista no HTML
         function addCodeToList(code) {
             const li = document.createElement('li');
             li.className = 'code-item';
             li.innerHTML = `
-                Código Completo: ${code}
+                Código Code 128 Válido Lido: ${code}
                 <button onclick="removeCode('${code}')">Excluir</button>
             `;
             resultList.appendChild(li);
@@ -175,59 +174,18 @@
 
         // Função para remover um código da lista
         function removeCode(code) {
+            // Remove o código da lista de códigos válidos lidos
             const listItem = Array.from(resultList.getElementsByTagName('li')).find(item => item.textContent.includes(code));
             if (listItem) {
                 resultList.removeChild(listItem);
             }
+            // Remove o código do conjunto de códigos detectados
             detectedCodes.delete(code);
         }
 
         // Função para parar o scanner
         function stopScanner() {
             Quagga.stop();
-        }
-         function isValidManualCode(code) {
-            const regex = /^[0-9]{12}$/; // Exigir 12 números exatos
-            return regex.test(code);
-        }
-
-        // Função para solicitar a sequência de volumes e gerar os códigos completos
-        function promptVolumeSequence(code) {
-            let volumeInput = prompt("Digite a sequência de volumes (ex: 1 a 5 ou 1,2,3)", "");
-
-            if (volumeInput) {
-                const volumeCodes = expandVolumeSequence(volumeInput);
-                volumeCodes.forEach(volume => {
-                    const fullCode = `${code}${volume}`;
-                    if (!detectedCodes.has(fullCode)) {
-                        addCodeToList(fullCode);
-                        detectedCodes.add(fullCode);
-                        playBeepSound();
-                    }
-                });
-            }
-        }
-
-        // Função para expandir uma sequência de volumes, complementando com zeros
-        function expandVolumeSequence(input) {
-            let volumes = [];
-            const rangeRegex = /(\d+)\s*a\s*(\d+)/; // Regex para intervalos "1 a 5"
-            const singleNumbers = input.split(","); // Separar os números por vírgula
-
-            singleNumbers.forEach(item => {
-                const rangeMatch = item.trim().match(rangeRegex);
-                if (rangeMatch) {
-                    let start = parseInt(rangeMatch[1]);
-                    let end = parseInt(rangeMatch[2]);
-                    for (let i = start; i <= end; i++) {
-                        volumes.push(i.toString().padStart(4, '0')); // Complementar com 0 à esquerda
-                    }
-                } else {
-                    volumes.push(item.trim().padStart(4, '0')); // Caso seja apenas um número
-                }
-            });
-
-            return volumes;
         }
 
         // Função para adicionar código manualmente
@@ -244,21 +202,6 @@
             }
         }
 
-         // Ação ao clicar no botão para inserir código manual
-        document.getElementById('manual-code-submit-btn').addEventListener('click', function() {
-            const manualCodeInput = document.getElementById('manual-code-input');
-            const code = manualCodeInput.value.trim();
-
-            if (isValidManualCode(code)) {
-                promptVolumeSequence(code); // Solicitar sequência de volumes
-                manualCodeInput.value = ''; // Limpar o campo
-            } else {
-                alert("Por favor, insira um código de 12 dígitos numéricos.");
-            }
-        });
-
-        
-
         // Adiciona evento de submissão ao formulário
         document.getElementById('manual-code-form').addEventListener('submit', addManualCode);
 
@@ -271,15 +214,8 @@
         // Botão para parar manualmente
         document.getElementById('stop-btn').addEventListener('click', stopScanner);
 
-              // Botão para mostrar o formulário de inserção manual
-        document.getElementById('show-manual-form-btn').addEventListener('click', function() {
-            const manualCodeSection = document.getElementById('manual-code-section');
-            manualCodeSection.style.display = 'block'; // Mostra a seção do formulário
-        });
-
         // Iniciar scanner ao carregar a página
         startScanner();
-       
     </script>
 </body>
 </html>
