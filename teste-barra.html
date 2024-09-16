@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leitor de Código de Barras (EAN-13)</title>
+    <title>Leitor de Código de Barras (2 of 5)</title>
     <style>
         #interactive {
             position: relative;
@@ -25,7 +25,7 @@
     </style>
 </head>
 <body>
-    <h1>Leitor de Código de Barras (EAN-13)</h1>
+    <h1>Leitor de Código de Barras (2 of 5)</h1>
     <div id="interactive" class="viewport"></div>
     <button id="stop-btn">Parar Leitura</button>
     <h2>Códigos Lidos:</h2>
@@ -36,20 +36,15 @@
 
     <script>
         const resultList = document.getElementById('result-list');
-        const detectedCodes = new Set(); // Armazenar códigos EAN-13 únicos
+        const detectedCodes = new Set(); // Armazenar códigos 2 of 5 únicos
 
-        // Função para validar o EAN-13 com base no dígito verificador
-        /*function validateEAN13(code) {
-            if (code.length !== 13) return false;
-            const digits = code.split('').map(Number);
-            const checksum = digits.slice(0, 12).reduce((sum, digit, idx) => {
-                return sum + digit * (idx % 2 === 0 ? 1 : 3);
-            }, 0);
-            const checkDigit = (10 - (checksum % 10)) % 10;
-            return checkDigit === digits[12];
-        }*/
+        // Função para validar o código de barras 2 of 5 (Opcional, caso tenha padrão específico)
+        function validate2of5(code) {
+            // Você pode adicionar validação específica para o formato aqui, se necessário
+            return true; // Considera todos os códigos 2 of 5 como válidos
+        }
 
-        // Iniciar a captura de vídeo e leitura de código de barras (apenas EAN-13)
+        // Iniciar a captura de vídeo e leitura de código de barras (padrão 2 of 5)
         function startScanner() {
             Quagga.init({
                 inputStream: {
@@ -63,7 +58,7 @@
                     },
                 },
                 decoder: {
-                    readers: ["i2of5_reader"] // Somente EAN-13
+                    readers: ["interleaved_2of5_reader"] // Configurar para Interleaved 2 of 5
                 },
                 locate: true, // Tentar localizar o código de barras na imagem
                 locator: {
@@ -81,14 +76,14 @@
             // Quando o código de barras for detectado
             Quagga.onDetected(function(data) {
                 const code = data.codeResult.code;
-            
+                if (validate2of5(code)) { // Validação opcional para código 2 of 5
                     if (!detectedCodes.has(code)) { // Verifica se o código já foi adicionado
                         addCodeToList(code); // Adiciona uma linha no HTML
                         detectedCodes.add(code); // Adiciona o código ao conjunto
                     } else {
                         console.log(`Código ${code} já foi detectado.`);
                     }
-                 else {
+                } else {
                     console.warn(`Código inválido detectado: ${code}`);
                 }
             });
@@ -97,7 +92,7 @@
         // Função para adicionar o código lido à lista no HTML
         function addCodeToList(code) {
             const li = document.createElement('li');
-            li.textContent = `Código EAN-13 Lido: ${code}`;
+            li.textContent = `Código 2 of 5 Lido: ${code}`;
             resultList.appendChild(li);
         }
 
