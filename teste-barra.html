@@ -164,6 +164,49 @@
         function stopScanner() {
             Quagga.stop();
         }
+         function isValidManualCode(code) {
+            const regex = /^[0-9]{12}$/; // Exigir 12 números exatos
+            return regex.test(code);
+        }
+
+        // Função para solicitar a sequência de volumes e gerar os códigos completos
+        function promptVolumeSequence(code) {
+            let volumeInput = prompt("Digite a sequência de volumes (ex: 1 a 5 ou 1,2,3)", "");
+
+            if (volumeInput) {
+                const volumeCodes = expandVolumeSequence(volumeInput);
+                volumeCodes.forEach(volume => {
+                    const fullCode = `${code}${volume}`;
+                    if (!detectedCodes.has(fullCode)) {
+                        addCodeToList(fullCode);
+                        detectedCodes.add(fullCode);
+                        playBeepSound();
+                    }
+                });
+            }
+        }
+
+        // Função para expandir uma sequência de volumes, complementando com zeros
+        function expandVolumeSequence(input) {
+            let volumes = [];
+            const rangeRegex = /(\d+)\s*a\s*(\d+)/; // Regex para intervalos "1 a 5"
+            const singleNumbers = input.split(","); // Separar os números por vírgula
+
+            singleNumbers.forEach(item => {
+                const rangeMatch = item.trim().match(rangeRegex);
+                if (rangeMatch) {
+                    let start = parseInt(rangeMatch[1]);
+                    let end = parseInt(rangeMatch[2]);
+                    for (let i = start; i <= end; i++) {
+                        volumes.push(i.toString().padStart(4, '0')); // Complementar com 0 à esquerda
+                    }
+                } else {
+                    volumes.push(item.trim().padStart(4, '0')); // Caso seja apenas um número
+                }
+            });
+
+            return volumes;
+        }
 
         // Função para adicionar código manualmente
         function addManualCode(event) {
