@@ -44,12 +44,14 @@
     <h1>Leitor de Volumes com Código de Barras</h1>
     
     <h1>Defina o A Rota</h1>
+
     <select id="sheet">
       <option value="CTLA">CTLA</option>
-      <option value="Aba2">Aba 2</option>
+      <option value="pag">pag</option>
       <option value="Aba3">Aba 3</option>
       <!-- Adicione mais opções conforme necessário -->
     </select>
+    <h1>OI</h1>
     <button onclick="fetchValidCodes()">Enviar</button>
     
     <div id="interactive" class="viewport"></div>
@@ -89,7 +91,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 
     <script>
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyHc4lwNrsUqoOqciXDvL-9v0rmc1Hky-7Zry_GNU-ij5a09ghRaKAzPQWENhGoN43BaQ/exec'; // Substitua pela URL do Apps Script
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5QnTVROk22bdVq0bTwd70rj8nnC6ntnY7CNtu5-WSRhtjBn7BODx9M8Wnb9S7HzFl9A/exec?sheetName=CTLA'; // Substitua pela URL do Apps Script
 
         let validCodes = new Set(); // Armazenar os códigos válidos da planilha
         let manualCode = ''; // Armazenar o código manual inserido
