@@ -44,14 +44,13 @@
     <h1>Leitor de Volumes com Código de Barras</h1>
     
     <h1>Defina o A Rota</h1>
-    <select id="sheetSelector">
+    <select id="sheet">
       <option value="CTLA">CTLA</option>
       <option value="Aba2">Aba 2</option>
       <option value="Aba3">Aba 3</option>
       <!-- Adicione mais opções conforme necessário -->
     </select>
-    <button onclick="selecAba()">Enviar</button>
-    <button onclick="fetchValidCodes()">Carregar rota</button>
+    <button onclick="selecAba(); fetchValidCodes() ">Enviar</button>
     
     <div id="interactive" class="viewport"></div>
     <button id="stop-btn">Parar Leitura</button>
@@ -90,14 +89,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 
     <script>
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyHc4lwNrsUqoOqciXDvL-9v0rmc1Hky-7Zry_GNU-ij5a09ghRaKAzPQWENhGoN43BaQ/exec'; // Substitua pela URL do Apps Script
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzwzvRaObMAkqWPMFSnwlr2Dih1WaCifuyUEP2z2aQb/dev'; // Substitua pela URL do Apps Script
 
         let validCodes = new Set(); // Armazenar os códigos válidos da planilha
         let manualCode = ''; // Armazenar o código manual inserido
         
         function selecAba() {
         const sheet = document.getElementById('sheet').value;
-        const url = 'https://script.google.com/macros/s/AKfycbyHc4lwNrsUqoOqciXDvL-9v0rmc1Hky-7Zry_GNU-ij5a09ghRaKAzPQWENhGoN43BaQ/exec'; // Substitua pela URL do seu script
+        const url = 'APPS_SCRIPT_URL'; // Substitua pela URL do seu script
 
         fetch(`${url}?sheet=${encodeURIComponent(sheet)}`)
           .then(response => response.json())
