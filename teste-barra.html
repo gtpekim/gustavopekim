@@ -51,6 +51,7 @@
       <!-- Adicione mais opções conforme necessário -->
     </select>
     <button onclick="selecAba()">Enviar</button>
+    <button onclick="fetchValidCodes()">Carregar rota</button>
     
     <div id="interactive" class="viewport"></div>
     <button id="stop-btn">Parar Leitura</button>
@@ -134,7 +135,7 @@
         }
 
         // Inicializando a busca dos códigos na planilha via Apps Script
-        fetchValidCodes();
+        
 
         const resultList = document.getElementById('result-list');
         const detectedCodes = new Set(); // Armazenar códigos Code 128 válidos
