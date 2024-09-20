@@ -46,15 +46,15 @@
     <button id="stop-btn">Parar Leitura</button>
     <button id="show-manual-form-btn">Inserir Manual</button>
 
-    <h2>Códigos de Volume Encontrados:</h2>
+    <h2>Volume Encontrados:</h2>
     <ul id="volume-codes-list"></ul>
 
-    <h2>Códigos Válidos Lidos:</h2>
+    <h2>Volumes Lidos:</h2>
     <ul id="result-list"></ul>
 
     <!-- Seção para inserir códigos manualmente -->
     <div id="manual-code-section">
-        <h2>Adicionar Código Manualmente(V2):</h2>
+        <h2>Adicionar Volume Manualmente:</h2>
         <form id="manual-code-form">
             <label for="manual-code-input">Código:</label>
             <input type="text" id="manual-code-input" maxlength="12" pattern="\d*" required>
@@ -181,7 +181,7 @@
             const li = document.createElement('li');
             li.className = 'code-item';
             li.innerHTML = `
-                Código Code 128 Válido Lido: ${code}
+                Volume Lido: ${code}
                 <button onclick="removeCode('${code}')">Excluir</button>
             `;
             resultList.appendChild(li);
