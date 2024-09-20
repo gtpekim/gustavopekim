@@ -42,6 +42,16 @@
 </head>
 <body>
     <h1>Leitor de Volumes com Código de Barras</h1>
+    
+    <h1>Defina o A Rota</h1>
+    <select id="sheetSelector">
+      <option value="CTLA">CTLA</option>
+      <option value="Aba2">Aba 2</option>
+      <option value="Aba3">Aba 3</option>
+      <!-- Adicione mais opções conforme necessário -->
+    </select>
+    <button onclick="selecAba()">Enviar</button>
+    
     <div id="interactive" class="viewport"></div>
     <button id="stop-btn">Parar Leitura</button>
     <button id="show-manual-form-btn">Inserir Manual</button>
@@ -83,7 +93,18 @@
 
         let validCodes = new Set(); // Armazenar os códigos válidos da planilha
         let manualCode = ''; // Armazenar o código manual inserido
+        
+        function selecAba() {
+        const sheet = document.getElementById('sheet').value;
+        const url = 'https://script.google.com/macros/s/AKfycbyHc4lwNrsUqoOqciXDvL-9v0rmc1Hky-7Zry_GNU-ij5a09ghRaKAzPQWENhGoN43BaQ/exec'; // Substitua pela URL do seu script
 
+        fetch(`${url}?sheet=${encodeURIComponent(sheet)}`)
+          .then(response => response.json())
+          .then(data => {
+            console.log(data);
+            // Aqui você pode manipular os dados retornados, se necessário
+          });
+      }
         // Função para buscar os códigos da planilha via Apps Script
         async function fetchValidCodes() {
             try {
