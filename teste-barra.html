@@ -187,6 +187,16 @@
             resultList.appendChild(li);
         }
 
+        function addCodeToListManual(code) {
+            const li = document.createElement('li');
+            li.className = 'code-item';
+            li.innerHTML = `
+                Volume Lido Manual: ${code}
+                <button onclick="removeCode('${code}')">Excluir</button>
+            `;
+            resultList.appendChild(li);
+        }
+
         // Função para remover um código da lista
         function removeCode(code) {
             // Remove o código da lista de códigos válidos lidos
@@ -237,7 +247,7 @@
             validSequence.forEach(seq => {
                 const fullCode = `${manualCode}${seq}`; // Concatena código e sequência
                 if (!detectedCodes.has(fullCode)) {
-                    addCodeToList(fullCode); // Adiciona o código completo à lista
+                    addCodeToListManual(fullCode); // Adiciona o código completo à lista
                     detectedCodes.add(fullCode); // Adiciona o código ao conjunto
                 } else {
                     console.log(`Código ${fullCode} já está na lista de códigos válidos lidos.`);
