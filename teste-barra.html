@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leitor de Código de Barras (EAN-13)</title>
+    <title>Leitor de Volumes com Código de Barras</title>
     <style>
         #interactive {
             position: relative;
@@ -22,34 +22,211 @@
             width: 100%;
             height: 100%;
         }
+        #manual-code-section {
+            display: none; /* Esconder inicialmente */
+            margin-top: 20px;
+        }
+        #sequence-section {
+            display: none; /* Esconder inicialmente */
+            margin-top: 20px;
+        }
+        .code-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .code-item button {
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
-    <h1>Leitor de Código de Barras (EAN-13)</h1>
+    <h1>Leitor de Volumes com Código de Barras</h1>
+    
+
+    <label for="rota">Escolha uma rota:</label>
+    <select id="rota" name="rota" onchange="atualizarOpcoes()">
+        <option value="">Selecione</option>
+        <option value="norte">Norte</option>
+        <option value="nordeste">Nordeste</option>
+        <option value="sudeste">Sudeste</option>
+        <option value="sul">Sul</option>
+        <option value="centrooeste">Centro-Oeste</option>
+        <option value="aerea">Áerea Rio</option>
+    </select>
+
+    <br><br>
+
+    <label for="selecao">Escolha uma opção:</label>
+    <select id="selecao" name="selecao">
+        <option value="">Selecione uma rota primeiro</option>
+    </select>
+
+    <button onclick="fetchValidCodes();">Enviar</button>
+    
     <div id="interactive" class="viewport"></div>
     <button id="stop-btn">Parar Leitura</button>
-    <h2>Códigos Lidos:</h2>
+    <button id="show-manual-form-btn">Inserir Manual</button>
+
+    <h2>Volume Encontrados:</h2>
+    <ul id="volume-codes-list"></ul>
+
+    <h2>Volumes Lidos:</h2>
     <ul id="result-list"></ul>
+
+    <!-- Seção para inserir códigos manualmente -->
+    <div id="manual-code-section">
+        <h2>Adicionar Volume Manualmente:</h2>
+        <form id="manual-code-form">
+            <label for="manual-code-input">Código:</label>
+            <input type="text" id="manual-code-input" maxlength="12" pattern="\d*" required>
+            <button type="submit">Adicionar Código</button>
+        </form>
+    </div>
+
+    <!-- Seção para inserir a sequência -->
+    <div id="sequence-section">
+        <h2>Inserir Sequência:</h2>
+        <form id="sequence-form">
+            <label for="sequence-input">Sequência (separada por vírgulas):</label>
+            <input type="text" id="sequence-input" required>
+            <button type="submit">Adicionar Sequência</button>
+        </form>
+    </div>
+
+    <!-- Elemento de áudio para o som de bip -->
+    <audio id="beep-sound" src="caminho/para/seu/arquivo-de-bip.wav" preload="auto"></audio>
 
     <!-- Incluindo QuaggaJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 
     <script>
-        const resultList = document.getElementById('result-list');
-        const detectedCodes = new Set(); // Armazenar códigos EAN-13 únicos
+        //const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5QnTVROk22bdVq0bTwd70rj8nnC6ntnY7CNtu5-WSRhtjBn7BODx9M8Wnb9S7HzFl9A/exec?sheetName=CTLA'; // Substitua pela URL do Apps Script
+        var URL_BASE = "https://script.google.com/macros/s/AKfycbw5QnTVROk22bdVq0bTwd70rj8nnC6ntnY7CNtu5-WSRhtjBn7BODx9M8Wnb9S7HzFl9A/exec?sheetName="
+          
+        
+        //var APPS_SCRIPT_URL = URL_BASE + PCAN;
 
-        // Função para validar o EAN-13 com base no dígito verificador
-        function validateEAN13(code) {
-            if (code.length !== 13) return false;
-            const digits = code.split('').map(Number);
-            const checksum = digits.slice(0, 12).reduce((sum, digit, idx) => {
-                return sum + digit * (idx % 2 === 0 ? 1 : 3);
-            }, 0);
-            const checkDigit = (10 - (checksum % 10)) % 10;
-            return checkDigit === digits[12];
+        let validCodes = new Set(); // Armazenar os códigos válidos da planilha
+        let manualCode = ''; // Armazenar o código manual inserido
+        
+
+        function atualizarOpcoes() {
+            const rota = document.getElementById("rota").value;
+            const selecao = document.getElementById("selecao");
+
+            // Limpar as opções anteriores
+            selecao.innerHTML = "";
+
+            // Definir as novas opções com base na rota selecionada
+            let opcoes = [];
+            if (rota === "norte") {
+                opcoes = [
+                    {texto: "PCAN-MN", valor: "PCAN-MN"},
+                    {texto: "PCAN-BV", valor: "PCAN-BV"},
+                    {texto: "PCAN-PV", valor: "PCAN-PV"},
+                    {texto: "PCAN-BE", valor: "PCAN-BE"},
+                    {texto: "PCAN-AK", valor: "PCAN-AK"}
+                ];
+            } else if (rota === "nordeste") {
+                opcoes = [
+                    {texto: "ECAN-FZ", valor: "ECAN-FZ"},
+                    {texto: "PCAN-NT", valor: "PCAN-NT"},
+                    {texto: "PCAN-RF", valor: "PCAN-RF"},
+                    {texto: "PCAN-SV", valor: "PCAN-SV"}
+                ];
+            } else if (rota === "sudeste") {
+                opcoes = [
+                    {texto: "PCAN-GR", valor: "PCAN-GR"},
+                    {texto: "PCAN-LS", valor: "PCAN-LS"},
+                    {texto: "ECAN-BQ", valor: "ECAN-BQ"},
+                    {texto: "PCAN-YS", valor: "PCAN-YS"}
+                ];
+            } else if (rota === "sul") {
+                opcoes = [
+                    {texto: "PCAN-SM", valor: "PCAN-SM"},
+                    {texto: "PCAN-FL", valor: "PCAN-FL"},
+                    {texto: "PCAN-CO", valor: "PCAN-CO"},
+                    {texto: "PCAN-CT", valor: "PCAN-CT"}
+                ];
+            } else if (rota === "centrooeste") {
+                opcoes = [
+                    {texto: "PCAN-AN", valor: "PCAN-AN"},
+                    {texto: "PCAN-BR", valor: "PCAN-BR"},
+                    {texto: "PCAN-CG", valor: "PCAN-CG"}
+                ];
+            } else if (rota === "aerea") {
+                opcoes = [
+                    {texto: "CTLA", valor: "CTLA"},
+                    {texto: "PCAN-AF", valor: "PCAN-AF"},
+                    {texto: "PCAN-SC", valor: "PCAN-SC"}
+                ];
+            }
+
+            // Adicionar as opções ao segundo seletor
+            opcoes.forEach(function(opcao) {
+                let option = document.createElement("option");
+                option.value = opcao.valor;  // Define o value em MAIÚSCULAS
+                option.text = opcao.texto;   // Define o texto visível
+                selecao.appendChild(option);
+            });
+        }
+        
+        // Função para buscar os códigos da planilha via Apps Script
+        async function fetchValidCodes() {
+            //var PCAN = document.getElementById('sheet').value
+            var PCAN = document.getElementById('selecao').value
+            var APPS_SCRIPT_URL = URL_BASE + PCAN;
+            
+            try {
+                const response = await fetch(APPS_SCRIPT_URL);
+                const codes = await response.json();
+                
+                codes.forEach(code => validCodes.add(code.trim())); // Adicionar os códigos válidos ao conjunto
+                console.log("Códigos carregados:", validCodes);
+
+                // Exibir os códigos de volume encontrados na plan+9ilha
+                displayVolumeCodes(codes);
+            } catch (error) {
+                console.error("Erro ao buscar os códigos via Apps Script:", error);
+                console.log("PCAN: "+PCAN);
+                console.log("URL BASE: "+URL_BASE);
+                console.log("URL APPS: "+APPS_SCRIPT_URL);
+                alert("Erro ao carregar PCAN")
+                
+            }
         }
 
-        // Iniciar a captura de vídeo e leitura de código de barras (apenas EAN-13)
+        // Função para exibir os códigos de volume na página
+        function displayVolumeCodes(codes) {
+            const volumeCodesList = document.getElementById('volume-codes-list');
+            volumeCodesList.innerHTML = ''; // Limpar lista existente
+
+            codes.forEach(code => {
+                const li = document.createElement('li');
+                li.textContent = `Código de Volume: ${code}`;
+                volumeCodesList.appendChild(li);
+            });
+        }
+
+        // Inicializando a busca dos códigos na planilha via Apps Script
+        
+
+        const resultList = document.getElementById('result-list');
+        const detectedCodes = new Set(); // Armazenar códigos Code 128 válidos
+
+        // Função para validar o código com a lista de códigos da planilha
+        function validateCode128(code) {
+            return validCodes.has(code); // Verifica se o código está na lista de válidos
+        }
+
+        // Função para tocar o som de bip
+        function playBeepSound() {
+            const beepSound = document.getElementById('beep-sound');
+            beepSound.play();
+        }
+
+        // Iniciar a captura de vídeo e leitura de código de barras (apenas Code 128)
         function startScanner() {
             Quagga.init({
                 inputStream: {
@@ -63,7 +240,7 @@
                     },
                 },
                 decoder: {
-                    readers: ["ean_reader"] // Somente EAN-13
+                    readers: ["code_128_reader"] // Aceitar apenas Code 128
                 },
                 locate: true, // Tentar localizar o código de barras na imagem
                 locator: {
@@ -81,15 +258,17 @@
             // Quando o código de barras for detectado
             Quagga.onDetected(function(data) {
                 const code = data.codeResult.code;
-                if (validateEAN13(code)) { // Validação com o dígito verificador EAN-13
+
+                if (validateCode128(code)) { // Verificar se o código está na planilha
                     if (!detectedCodes.has(code)) { // Verifica se o código já foi adicionado
                         addCodeToList(code); // Adiciona uma linha no HTML
                         detectedCodes.add(code); // Adiciona o código ao conjunto
+                        playBeepSound(); // Toca o som de bip
                     } else {
                         console.log(`Código ${code} já foi detectado.`);
                     }
                 } else {
-                    console.warn(`Código inválido detectado: ${code}`);
+                    console.warn(`Código ${code} não está na lista de válidos.`);
                 }
             });
         }
@@ -97,14 +276,102 @@
         // Função para adicionar o código lido à lista no HTML
         function addCodeToList(code) {
             const li = document.createElement('li');
-            li.textContent = `Código EAN-13 Lido: ${code}`;
+            li.className = 'code-item';
+            li.innerHTML = `
+                Volume Lido: ${code}
+                <button onclick="removeCode('${code}')">Excluir</button>
+            `;
             resultList.appendChild(li);
+        }
+
+        function addCodeToListManual(code) {
+            const li = document.createElement('li');
+            li.className = 'code-item';
+            li.innerHTML = `
+                Volume Lido Manual: ${code}
+                <button onclick="removeCode('${code}')">Excluir</button>
+            `;
+            resultList.appendChild(li);
+        }
+
+        // Função para remover um código da lista
+        function removeCode(code) {
+            // Remove o código da lista de códigos válidos lidos
+            const listItem = Array.from(resultList.getElementsByTagName('li')).find(item => item.textContent.includes(code));
+            if (listItem) {
+                resultList.removeChild(listItem);
+            }
+            // Remove o código do conjunto de códigos detectados
+            detectedCodes.delete(code);
         }
 
         // Função para parar o scanner
         function stopScanner() {
             Quagga.stop();
         }
+
+        // Função para adicionar código manualmente
+        function addManualCode(event) {
+            event.preventDefault(); // Evita o envio do formulário
+
+            const manualCodeInput = document.getElementById('manual-code-input');
+            let code = manualCodeInput.value.trim();
+
+            if (code.length === 12 && !isNaN(code) && !validCodes.has(code) && !detectedCodes.has(code)) { // Verifica se o código tem 12 dígitos e é numérico
+                manualCode = code; // Armazena o código inserido
+                showSequenceSection(); // Mostra a seção de sequência
+                manualCodeInput.value = ''; // Limpa o campo de entrada
+            } else {
+                alert("Insira um código de 12 dígitos numéricos que ainda não está na lista.");
+            }
+        }
+
+        // Função para mostrar a seção de sequência
+        function showSequenceSection() {
+            const sequenceSection = document.getElementById('sequence-section');
+            sequenceSection.style.display = 'block'; // Exibe a seção de sequência
+        }
+
+        // Função para adicionar sequência manualmente
+        function addSequence(event) {
+            event.preventDefault();
+
+            const sequenceInput = document.getElementById('sequence-input');
+            const sequence = sequenceInput.value.split(',').map(item => item.trim());
+
+            const validSequence = sequence.map(num => num.padStart(4, '0')); // Garante 4 dígitos com zeros à esquerda
+
+            validSequence.forEach(seq => {
+                const fullCode = `${manualCode}${seq}`; // Concatena código e sequência
+                if (!detectedCodes.has(fullCode)) {
+                    addCodeToListManual(fullCode); // Adiciona o código completo à lista
+                    detectedCodes.add(fullCode); // Adiciona o código ao conjunto
+                } else {
+                    console.log(`Código ${fullCode} já está na lista de códigos válidos lidos.`);
+                }
+            });
+
+            sequenceInput.value = ''; // Limpa o campo de sequência
+            hideSequenceSection(); // Esconde a seção de sequência após adicionar
+        }
+
+        // Função para esconder a seção de sequência
+        function hideSequenceSection() {
+            const sequenceSection = document.getElementById('sequence-section');
+            sequenceSection.style.display = 'none';
+        }
+
+        // Adiciona evento de submissão ao formulário de código manual
+        document.getElementById('manual-code-form').addEventListener('submit', addManualCode);
+
+        // Adiciona evento de submissão ao formulário de sequência
+        document.getElementById('sequence-form').addEventListener('submit', addSequence);
+
+        // Adiciona evento de clique ao botão de mostrar o formulário
+        document.getElementById('show-manual-form-btn').addEventListener('click', function() {
+            const manualCodeSection = document.getElementById('manual-code-section');
+            manualCodeSection.style.display = 'block'; // Mostra a seção do formulário
+        });
 
         // Botão para parar manualmente
         document.getElementById('stop-btn').addEventListener('click', stopScanner);
