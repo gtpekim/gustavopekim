@@ -38,6 +38,22 @@
         .code-item button {
             margin-left: 10px;
         }
+        #manual-code-section {
+            display: none; /* Esconder inicialmente */
+            margin-top: 20px;
+        }
+        #sequence-section {
+            display: none; /* Esconder inicialmente */
+            margin-top: 20px;
+        }
+        .code-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .code-item button {
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -72,7 +88,36 @@
     <ul id="volume-codes-list"></ul>
 
     <h2>Volumes Lidos:</h2>
+    <button id="show-manual-form-btn">Inserir Manual</button>
+
+    <h2>Volume Encontrados:</h2>
+    <ul id="volume-codes-list"></ul>
+
+    <h2>Volumes Lidos:</h2>
     <ul id="result-list"></ul>
+
+    <!-- Seção para inserir códigos manualmente -->
+    <div id="manual-code-section">
+        <h2>Adicionar Volume Manualmente:</h2>
+        <form id="manual-code-form">
+            <label for="manual-code-input">Código:</label>
+            <input type="text" id="manual-code-input" maxlength="12" pattern="\d*" required>
+            <button type="submit">Adicionar Código</button>
+        </form>
+    </div>
+
+    <!-- Seção para inserir a sequência -->
+    <div id="sequence-section">
+        <h2>Inserir Sequência:</h2>
+        <form id="sequence-form">
+            <label for="sequence-input">Sequência (separada por vírgulas):</label>
+            <input type="text" id="sequence-input" required>
+            <button type="submit">Adicionar Sequência</button>
+        </form>
+    </div>
+
+    <!-- Elemento de áudio para o som de bip -->
+    <audio id="beep-sound" src="caminho/para/seu/arquivo-de-bip.wav" preload="auto"></audio>
 
     <!-- Seção para inserir códigos manualmente -->
     <div id="manual-code-section">
@@ -215,6 +260,15 @@
         const resultList = document.getElementById('result-list');
         const detectedCodes = new Set(); // Armazenar códigos Code 128 válidos
 
+        // Função para validar o código com a lista de códigos da planilha
+        function validateCode128(code) {
+            return validCodes.has(code); // Verifica se o código está na lista de válidos
+        }
+
+        // Função para tocar o som de bip
+        function playBeepSound() {
+            const beepSound = document.getElementById('beep-sound');
+            beepSound.play();
         // Função para validar o código com a lista de códigos da planilha
         function validateCode128(code) {
             return validCodes.has(code); // Verifica se o código está na lista de válidos
