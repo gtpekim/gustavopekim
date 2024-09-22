@@ -30,6 +30,11 @@
             display: none; /* Esconder inicialmente */
             margin-top: 20px;
         }
+
+        #form-iniciar-scanner {
+            display: none; /*inicialmente oculto*/
+        }
+
         .code-item {
             display: flex;
             justify-content: space-between;
@@ -65,8 +70,16 @@
     <button onclick="fetchValidCodes();">Enviar</button>
     
     <div id="interactive" class="viewport"></div>
-    <button id="stop-btn">Parar Leitura</button>
+
+    <!--form do botão retomar scanner inicialmente oculto-->
+    <div id="form-iniciar-scanner">
+        <button id="retomar-btn" onclick= "startScanner()">Retomar Scanner</button>
+    </div>
+
+    <button id="stop-btn">Parar Leitura</button><br>
     <button id="show-manual-form-btn">Inserir Manual</button>
+
+    
 
     <h2>Volume Encontrados:</h2>
     <ul id="volume-codes-list"></ul>
@@ -234,6 +247,8 @@
             beepSound.play();
         }
 
+        startScanner();
+
         // Iniciar a captura de vídeo e leitura de código de barras (apenas Code 128)
         function startScanner() {
             Quagga.init({
@@ -273,10 +288,10 @@
                         detectedCodes.add(code); // Adiciona o código ao conjunto
                         playBeepSound(); // Toca o som de bip
                     } else {
-                        console.log(`Código ${code} já foi detectado.`);
+                        //console.log(`Código ${code} já foi detectado.`);
                     }
                 } else {
-                    console.warn(`Código ${code} não está na lista de válidos.`);
+                    //console.warn(`Código ${code} não está na lista de válidos.`);
                 }
             });
         }
@@ -384,11 +399,31 @@
             focarManual();
         });
 
+        // Adiciona evento de click no botão parar leitura para iniciar novamente o scanner
+        document.getElementById('stop-btn').addEventListener('click', function(){
+            const formIniciarScanner = document.getElementById('form-iniciar-scanner');
+            const bntStop = document.getElementById('stop-btn');
+            formIniciarScanner.style.display = 'block';
+            bntStop.style.display = 'none';
+
+        }
+        );
         // Botão para parar manualmente
         document.getElementById('stop-btn').addEventListener('click', stopScanner);
 
+
+        document.getElementById('retomar-btn').addEventListener('click', function(){
+            const formIniciarScanner = document.getElementById('form-iniciar-scanner');
+            const bntStop = document.getElementById('stop-btn');
+            formIniciarScanner.style.display = 'none';
+            bntStop.style.display = 'block';
+        }
+        );
+
+        
+
         // Iniciar scanner ao carregar a página
-        startScanner();
+        
     </script>
 </body>
 </html>
