@@ -126,15 +126,22 @@
             if (audioEnabled) {
                 beep.play().catch(error => {
                     console.log('Erro ao reproduzir o som: ', error);
+                    alert('Erro ao reproduzir som.', error);
                 });
             } else {
                 console.log('Som ainda não foi habilitado pelo usuário.');
+                alert('Não habilitado pelo usuário!');
             }
         }
 
         document.getElementById('start-button').addEventListener('click', function() {
             audioEnabled = true; // Som habilitado após o clique do usuário
             alert('Leitor de código de barras habilitado. Agora o som será reproduzido.');
+        });
+
+        document.getElementById('start-button').addEventListener('touchstart', function() {
+            audioEnabled = true; // Som habilitado após toque
+            alert('Leitor de código de barras habilitado.');
         });
 
         //var APPS_SCRIPT_URL = URL_BASE + PCAN;
