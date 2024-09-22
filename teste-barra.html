@@ -78,7 +78,7 @@
 
     <button id="stop-btn">Parar Leitura</button><br>
     <button id="show-manual-form-btn">Inserir Manual</button>
-
+    <button id="start-button">Clique para iniciar o leitor</button>
     
 
     <h2>Volume Encontrados:</h2>
@@ -116,8 +116,27 @@
     <script>
         //const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5QnTVROk22bdVq0bTwd70rj8nnC6ntnY7CNtu5-WSRhtjBn7BODx9M8Wnb9S7HzFl9A/exec?sheetName=CTLA'; // Substitua pela URL do Apps Script
         var URL_BASE = "https://script.google.com/macros/s/AKfycbw5QnTVROk22bdVq0bTwd70rj8nnC6ntnY7CNtu5-WSRhtjBn7BODx9M8Wnb9S7HzFl9A/exec?sheetName="
-          
         
+        const beep = new Audio('beep/beep.mp3');
+                
+        // Variável para controlar se o som já foi habilitado pelo usuário
+        let audioEnabled = false;
+
+        function barcodeScanned() {
+            if (audioEnabled) {
+                beep.play().catch(error => {
+                    console.log('Erro ao reproduzir o som: ', error);
+                });
+            } else {
+                console.log('Som ainda não foi habilitado pelo usuário.');
+            }
+        }
+
+        document.getElementById('start-button').addEventListener('click', function() {
+            audioEnabled = true; // Som habilitado após o clique do usuário
+            alert('Leitor de código de barras habilitado. Agora o som será reproduzido.');
+        });
+
         //var APPS_SCRIPT_URL = URL_BASE + PCAN;
 
         let validCodes = new Set(); // Armazenar os códigos válidos da planilha
@@ -286,7 +305,8 @@
                     if (!detectedCodes.has(code)) { // Verifica se o código já foi adicionado
                         addCodeToList(code); // Adiciona uma linha no HTML
                         detectedCodes.add(code); // Adiciona o código ao conjunto
-                        playBeepSound(); // Toca o som de bip
+                        barcodeScanned();
+                        //playBeepSound(); // Toca o som de bip
                     } else {
                         //console.log(`Código ${code} já foi detectado.`);
                     }
