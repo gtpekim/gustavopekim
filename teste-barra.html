@@ -90,7 +90,7 @@
         <form id="sequence-form">
             <label for="sequence-input">Sequência (separada por vírgulas):</label>
             <input type="text" id="sequence-input" required>
-            <button type="submit">Adicionar Sequência</button>
+            <button onclick = "focarSequeManual();" type="submit">Adicionar Sequência</button>
         </form>
     </div>
 
@@ -110,6 +110,14 @@
         let validCodes = new Set(); // Armazenar os códigos válidos da planilha
         let manualCode = ''; // Armazenar o código manual inserido
         
+
+        function focarManual(){
+            document.getElementById("manual-code-input").focus();
+        }
+
+        function focarSequeManual(){
+            document.getElementById("sequence-input").focus();
+        }
 
         function atualizarOpcoes() {
             const rota = document.getElementById("rota").value;
@@ -324,6 +332,7 @@
             } else {
                 alert("Insira um código de 12 dígitos numéricos que ainda não está na lista.");
             }
+            focarSequeManual();
         }
 
         // Função para mostrar a seção de sequência
@@ -371,6 +380,7 @@
         document.getElementById('show-manual-form-btn').addEventListener('click', function() {
             const manualCodeSection = document.getElementById('manual-code-section');
             manualCodeSection.style.display = 'block'; // Mostra a seção do formulário
+            focarManual();
         });
 
         // Botão para parar manualmente
