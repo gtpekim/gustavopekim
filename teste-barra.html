@@ -205,7 +205,7 @@
         </form>
     </div>
 
-    <button onclick="capturarConteudo(); testeVolMan();">Enviar conferência</button>
+    <button onclick="enviarConf()">Enviar conferência</button>
 
     <!-- Elemento de áudio para o som de bip -->
     <audio id="beep-sound" src="beep/beep.mp3" preload="auto"></audio>
@@ -227,7 +227,7 @@
         // Variável para controlar se o som já foi habilitado pelo usuário
         let audioEnabled = false;
 
-        function capturarConteudo() {
+        /*function capturarConteudo() {
             // Pega todos os elementos <li> com a classe 'code-item'
             const items = document.querySelectorAll('.code-item');
             
@@ -257,6 +257,12 @@
             }
             
 
+        }*/
+
+        function enviarConf(){
+
+            alert("Volumes Manuais: "+volMan);
+            alert("Volumes Barra: "+volBarra);
         }
 
         function barcodeScanned() {
@@ -460,8 +466,10 @@
             });
         }
 
+        let volBarra = [];
         // Função para adicionar o código lido à lista no HTML
         function addCodeToList(code) {
+            volBarra.push(code);
             const li = document.createElement('li');
             li.className = 'code-item';
             li.innerHTML = `
@@ -471,10 +479,9 @@
             resultList.appendChild(li);
         }
 
-        let volMan = "";
+        let volMan = [];
         function addCodeToListManual(code) {
-            //volMan.push(code);
-            console.log("Volume inserido: "+volMan);
+            volMan.push(code);
             const li = document.createElement('li');
             li.className = 'code-item';
             li.innerHTML = `
@@ -489,6 +496,16 @@
         // Função para remover um código da lista
         function removeCode(code) {
             // Remove o código da lista de códigos válidos lidos
+            const indiceV = volMan.indexOf(code);
+            const indiceB = volBarra.indexOf(code);
+            if (indiceV !== -1) {
+                volMan.splice(indiceV, 1); 
+            }
+
+            if (indiceB !== -1) {
+                volMan.splice(indiceB, 1); 
+            }
+
             const listItem = Array.from(resultList.getElementsByTagName('li')).find(item => item.textContent.includes(code));
             if (listItem) {
                 resultList.removeChild(listItem);
