@@ -4,6 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leitor de Volumes com Código de Barras</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif; /* Font style for the body */
+            background-color: #f0f8ff; /* Light blue background color */
+            color: #333; /* Dark grey text color for contrast */
+            margin: 0;
+            padding: 20px;
+        }
+        
+        h1, h2 {
+            color: #007acc; /* Darker blue for headings */
+        }
+        
+        /* Style for Select Dropdown */
+        select {
+            padding: 10px; /* Add padding for better touch target */
+            font-size: 16px; /* Font size for better readability */
+            border: 1px solid #007acc; /* Border color matching the theme */
+            border-radius: 4px; /* Rounded corners */
+            margin-bottom: 20px; /* Space below the dropdown */
+        }
+        
+        /* Button Styles */
+        button {
+            background-color: #007acc; /* Button background color */
+            color: white; /* Text color for buttons */
+            border: none; /* Remove default border */
+            padding: 10px 15px; /* Padding for buttons */
+            border-radius: 4px; /* Rounded corners */
+            font-size: 16px; /* Font size for buttons */
+            cursor: pointer; /* Change cursor to pointer on hover */
+            margin-right: 10px; /* Space between buttons */
+        }
+        
+        /* Button Hover Effect */
+        button:hover {
+            background-color: #005f99; /* Darker shade on hover */
+        }
+        
+        /* Viewport Style */
+        .viewport {
+            border: 2px dashed #007acc; /* Dashed border for the viewport */
+            padding: 20px; /* Padding inside the viewport */
+            margin: 20px 0; /* Margin above and below the viewport */
+        }
+        
+        /* List Styles */
+        ul {
+            list-style-type: none; /* Remove default bullet points */
+            padding: 0; /* Remove padding */
+        }
+        
+        li {
+            background-color: #e6f7ff; /* Light blue background for list items */
+            margin: 5px 0; /* Space between list items */
+            padding: 10px; /* Padding inside list items */
+            border-radius: 4px; /* Rounded corners for list items */
+        }
+        
+        /* Manual Code Section Styles */
+        #manual-code-section, #sequence-section {
+            margin: 20px 0; /* Space above and below the sections */
+            padding: 15px; /* Padding inside the sections */
+            background-color: #e0f7fa; /* Light blue background for sections */
+            border: 1px solid #007acc; /* Border matching the theme */
+            border-radius: 4px; /* Rounded corners */
+        }
+        
+        /* Input Styles */
+        input[type="text"] {
+            padding: 10px; /* Padding for input fields */
+            font-size: 16px; /* Font size for input fields */
+            border: 1px solid #007acc; /* Border color for input fields */
+            border-radius: 4px; /* Rounded corners for input fields */
+            width: calc(100% - 22px); /* Full width minus padding/border */
+            margin-bottom: 10px; /* Space below input fields */
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px; /* Reduce padding on smaller screens */
+            }
+        
+            button {
+                width: 100%; /* Full width buttons on smaller screens */
+                margin-bottom: 10px; /* Space below buttons */
+            }
+        
+            input[type="text"], select {
+                width: 100%; /* Full width inputs/selects on smaller screens */
+            }
+        }
+    </style>
+    
     <style>
         #interactive {
             position: relative;
@@ -109,7 +205,7 @@
         </form>
     </div>
 
-    <button onclick="armazenarLivros();">Enviar conferência</button>
+    <button onclick="capturarConteudo(); testeVolMan();">Enviar conferência</button>
 
     <!-- Elemento de áudio para o som de bip -->
     <audio id="beep-sound" src="beep/beep.mp3" preload="auto"></audio>
@@ -123,25 +219,51 @@
         
         const beep = new Audio('beep/beep.mp3');
                 
+        function testeVolMan(){
+            console.log("Teste volman: "+volMan);
+            
+        }
+
         // Variável para controlar se o som já foi habilitado pelo usuário
         let audioEnabled = false;
 
-        function armazenarLivros() {
-            const listaItems = document.querySelectorAll('#vol-lidos li');
-            const livrosLidos = [];
+        function capturarConteudo() {
+            // Pega todos os elementos <li> com a classe 'code-item'
+            const items = document.querySelectorAll('.code-item');
+            
+            // Array para armazenar o conteúdo de cada item (sem o botão)
+            let conteudo = [];
 
-            listaItems.forEach(item => {
-                livrosLidos.push(item.textContent);
+            // Itera sobre os elementos e armazena o texto, ignorando o conteúdo do botão
+            items.forEach(function(item) {
+                // Clona o conteúdo do <li> para manipulação sem afetar o DOM original
+                let textoLi = item.cloneNode(true);
+
+                // Remove o botão da cópia
+                const botao = textoLi.querySelector('button');
+                if (botao) {
+                    textoLi.removeChild(botao);
+                }
+
+                // Armazena o conteúdo do <li> sem o botão
+                conteudo.push(textoLi.textContent.trim());
             });
 
-            console.log(livrosLidos);
+            if (conteudo.length === 0) {
+            alert('Nenhum volume lido');
+            } else {
+                // Exibe um alerta com os dados armazenados, ignorando os botões
+                alert('Conferência: ' + conteudo.join(', '));
+            }
+            
+
         }
 
         function barcodeScanned() {
             if (audioEnabled) {
                 beep.play().catch(error => {
                     console.log('Erro ao reproduzir o som: ', error);
-                    alert('Erro ao reproduzir som.', error);
+                    alert('Erro ao reproduzir som.'+ error);
                 });
             } else {
                 console.log('Som ainda não foi habilitado pelo usuário.');
@@ -343,21 +465,26 @@
             const li = document.createElement('li');
             li.className = 'code-item';
             li.innerHTML = `
-                Volume Lido: ${code}
+                Volume Barra: ${code}
                 <button onclick="removeCode('${code}')">Excluir</button>
             `;
             resultList.appendChild(li);
         }
 
+        let volMan = "";
         function addCodeToListManual(code) {
+            //volMan.push(code);
+            console.log("Volume inserido: "+volMan);
             const li = document.createElement('li');
             li.className = 'code-item';
             li.innerHTML = `
-                Volume Lido Manual: ${code}
+                Volume Manual: ${code}
                 <button onclick="removeCode('${code}')">Excluir</button>
             `;
             resultList.appendChild(li);
         }
+
+
 
         // Função para remover um código da lista
         function removeCode(code) {
@@ -408,15 +535,21 @@
             const validSequence = sequence.map(num => num.padStart(4, '0')); // Garante 4 dígitos com zeros à esquerda
 
             validSequence.forEach(seq => {
-                const fullCode = `${manualCode}${seq}`; // Concatena código e sequência
-                if (!detectedCodes.has(fullCode)) {
-                    addCodeToListManual(fullCode); // Adiciona o código completo à lista
-                    detectedCodes.add(fullCode); // Adiciona o código ao conjunto
+                
+                if (seq == 0){
+                    alert('O valor "0" é permitido.');
+                }else if (seq >9999){
+                        alert('Valores acima de "9999" não são permitidos.');
                 } else {
-                    console.log(`Código ${fullCode} já está na lista de códigos válidos lidos.`);
-                    alert(`Volume ${fullCode} já foi adicionado!`);
-                }
-            });
+                    const fullCode = `${manualCode}${seq}`; // Concatena código e sequência
+                    if (!detectedCodes.has(fullCode)) {
+                        addCodeToListManual(fullCode); // Adiciona o código completo à lista
+                        detectedCodes.add(fullCode); // Adiciona o código ao conjunto
+                    } else {
+                        console.log(`Código ${fullCode} já está na lista de códigos válidos lidos.`);
+                        alert(`Volume ${fullCode} já foi adicionado!`);
+                            }
+                }});
 
             sequenceInput.value = ''; // Limpa o campo de sequência
             hideSequenceSection(); // Esconde a seção de sequência após adicionar
