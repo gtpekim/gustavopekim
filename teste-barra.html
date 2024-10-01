@@ -6,6 +6,7 @@
     <title>Leitor de Volumes com Código de Barras</title>
     
     <style>
+
         body {
             font-family: Arial, sans-serif; /* Font style for the body */
             background-color: #f0f8ff; /* Light blue background color */
@@ -74,7 +75,7 @@
         }
         
         /* Input Styles */
-        input[type="text"] {
+        input[type="text"], input[type="password"] {
             padding: 10px; /* Padding for input fields */
             font-size: 16px; /* Font size for input fields */
             border: 1px solid #007acc; /* Border color for input fields */
@@ -131,6 +132,10 @@
             display: none; /*inicialmente oculto*/
         }
 
+        #divLogin {
+            display: block; 
+        }
+
         .code-item {
             display: flex;
             justify-content: space-between;
@@ -139,13 +144,41 @@
         .code-item button {
             margin-left: 10px;
         }
+        
+        .content {
+            display: none; /* Inicialmente escondido */
+            margin-top: 20px;
+        }
+
+        .login-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+
+        
+
     </style>
 </head>
 <body>
+
+    <div id="loginConteudo" class="login-container">
+        <h2>Login</h2>
+        <div id="error-msg" class="error"></div>
+        <input type="text" id="username" placeholder="Usuário" required>
+        <input type="password" id="password" placeholder="Senha" required>
+        <button onclick="login()">Entrar</button>
+    </div>
+
+    <div class="content" id="hiddenContent">
     <h1>Leitor de Volumes com Código de Barras</h1>
     
 
-    <label for="rota">Escolha uma rota:</label>
+    <label for="rota">Escolha uma rota:</label>     
+    
     <select id="rota" name="rota" onchange="atualizarOpcoes()">
         <option value="">Selecione</option>
         <option value="norte">Norte</option>
@@ -210,10 +243,35 @@
     <!-- Elemento de áudio para o som de bip -->
     <audio id="beep-sound" src="beep/beep.mp3" preload="auto"></audio>
 
+</div>
+
     <!-- Incluindo QuaggaJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 
     <script>
+            document.getElementById('login-btn').addEventListener('click', function(){
+            const divLogin = document.getElementById('divLogin');
+            divLogin.style.display = 'none';
+
+        });
+
+        function login() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            var errorMsg = document.getElementById("error-msg");
+            var loginConteudo = document.getElementById("loginConteudo");
+            var hiddenContent = document.getElementById("hiddenContent");
+
+            // Exemplo simples de validação (usuário: admin, senha: 123456)
+            if (username === "admin" && password === "123456") {
+                errorMsg.innerHTML = ""; // Limpa mensagens de erro
+                hiddenContent.style.display = "block"; // Mostra o conteúdo oculto
+                //document.querySelector('.login-container').style.display = "none"; // Esconde o formulário de login
+                loginConteudo.style.display = "none";
+            } else {
+                errorMsg.innerHTML = "Usuário ou senha incorretos.";
+            }
+        }
 
     /*function gravarValorRota() {
             
