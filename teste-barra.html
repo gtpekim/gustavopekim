@@ -247,14 +247,13 @@
         
         selecRota: selecRota,
         volMan: volMan,
+        volBarra: volBarra,
         
-        //volBarra: volBarra,
       };
 
       console.log(data);
-
       
-      const url = 'https://script.google.com/macros/s/AKfycbzkvZRaTEgZSem4oZdDmjHqiEFqUfkT27AIfitlOnybWDr8uRcw1lwoxM2iijPLORTSwQ/exec';
+      const url = 'https://script.google.com/macros/s/AKfycbxubuxaHPsQeTx0aY6jHA0FP2yMQO1bWikhvgvcC6nI9BdQDKf6KFFW_ApEFaXszyrlAw/exec';
       fetch(url, {
                 method: 'POST',
                 mode: 'no-cors',  // Use 'no-cors' para evitar erros de CORS, mas pode impedir uma resposta direta
@@ -276,16 +275,9 @@
         document.querySelector('.enviarConferencia').addEventListener('click', enviarConferencia);
     });
 
-
-        //const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5QnTVROk22bdVq0bTwd70rj8nnC6ntnY7CNtu5-WSRhtjBn7BODx9M8Wnb9S7HzFl9A/exec?sheetName=CTLA'; // Substitua pela URL do Apps Script
         var URL_BASE = "https://script.google.com/macros/s/AKfycbw5QnTVROk22bdVq0bTwd70rj8nnC6ntnY7CNtu5-WSRhtjBn7BODx9M8Wnb9S7HzFl9A/exec?sheetName="
         
         const beep = new Audio('beep/beep.mp3');
-                
-        function testeVolMan(){
-            console.log("Teste volman: "+volMan);
-            
-        }
 
         // Variável para controlar se o som já foi habilitado pelo usuário
         let audioEnabled = false;
@@ -322,8 +314,6 @@
 
         }*/
 
-        
-
         function barcodeScanned() {
             if (audioEnabled) {
                 beep.play().catch(error => {
@@ -345,8 +335,6 @@
             audioEnabled = true; // Som habilitado após toque
             alert('Leitor de código de barras habilitado.');
         });
-
-        //var APPS_SCRIPT_URL = URL_BASE + PCAN;
 
         let validCodes = new Set(); // Armazenar os códigos válidos da planilha
         let manualCode = ''; // Armazenar o código manual inserido
@@ -423,7 +411,7 @@
         
         // Função para buscar os códigos da planilha via Apps Script
         async function fetchValidCodes() {
-            //var PCAN = document.getElementById('sheet').value
+            
             var PCAN = document.getElementById('selecao').value
             var APPS_SCRIPT_URL = URL_BASE + PCAN;
             
