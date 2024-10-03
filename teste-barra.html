@@ -6,7 +6,6 @@
     <title>Leitor de Volumes com Código de Barras</title>
     
     <style>
-
         body {
             font-family: Arial, sans-serif; /* Font style for the body */
             background-color: #f0f8ff; /* Light blue background color */
@@ -75,7 +74,7 @@
         }
         
         /* Input Styles */
-        input[type="text"], input[type="password"] {
+        input[type="text"] , input[type="password"]{
             padding: 10px; /* Padding for input fields */
             font-size: 16px; /* Font size for input fields */
             border: 1px solid #007acc; /* Border color for input fields */
@@ -83,6 +82,8 @@
             width: calc(100% - 22px); /* Full width minus padding/border */
             margin-bottom: 10px; /* Space below input fields */
         }
+
+
         
         /* Responsive Styles */
         @media (max-width: 768px) {
@@ -132,10 +133,6 @@
             display: none; /*inicialmente oculto*/
         }
 
-        #divLogin {
-            display: block; 
-        }
-
         .code-item {
             display: flex;
             justify-content: space-between;
@@ -144,10 +141,17 @@
         .code-item button {
             margin-left: 10px;
         }
-        
-        .content {
-            display: none; /* Inicialmente escondido */
-            margin-top: 20px;
+
+        #principal{
+            display:none;
+        }
+
+        .loginBox{
+            width: 20%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
         .login-container {
@@ -159,26 +163,53 @@
             text-align: center;
         }
 
-        
-
     </style>
 </head>
+
+    
+
+
 <body>
 
-    <div id="loginConteudo" class="login-container">
+    <!-- Formulário de Login -->
+    <div class="login-container">
         <h2>Login</h2>
         <div id="error-msg" class="error"></div>
         <input type="text" id="username" placeholder="Usuário" required>
-        <input type="password" id="password" placeholder="Senha" required>
+        <input class="loginBox" type="password" id="password" placeholder="Senha" required>
         <button onclick="login()">Entrar</button>
     </div>
 
-    <div class="content" id="hiddenContent">
+    <!-- Conteúdo que ficará oculto -->
+   
+
+    <script>
+
+        // Função para validar o login
+        function login() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            var errorMsg = document.getElementById("error-msg");;
+            var divPrincipal = document.getElementById("principal");
+            
+
+            // Exemplo simples de validação (usuário: admin, senha: 123456)
+            if (username === "admin" && password === "123456") {
+                errorMsg.innerHTML = ""; // Limpa mensagens de erro
+                divPrincipal.style.display = "block"; // Mostra o conteúdo oculto
+                document.querySelector('.login-container').style.display = "none"; // Esconde o formulário de login
+            } else {
+                errorMsg.innerHTML = "Usuário ou senha incorretos.";
+            }
+        }
+    </script>
+
+
+    <div id="principal">
     <h1>Leitor de Volumes com Código de Barras</h1>
     
 
-    <label for="rota">Escolha uma rota:</label>     
-    
+    <label for="rota">Escolha uma rota:</label>
     <select id="rota" name="rota" onchange="atualizarOpcoes()">
         <option value="">Selecione</option>
         <option value="norte">Norte</option>
@@ -243,35 +274,12 @@
     <!-- Elemento de áudio para o som de bip -->
     <audio id="beep-sound" src="beep/beep.mp3" preload="auto"></audio>
 
-</div>
+    </div>
 
     <!-- Incluindo QuaggaJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 
     <script>
-            document.getElementById('login-btn').addEventListener('click', function(){
-            const divLogin = document.getElementById('divLogin');
-            divLogin.style.display = 'none';
-
-        });
-
-        function login() {
-            var username = document.getElementById("username").value;
-            var password = document.getElementById("password").value;
-            var errorMsg = document.getElementById("error-msg");
-            var loginConteudo = document.getElementById("loginConteudo");
-            var hiddenContent = document.getElementById("hiddenContent");
-
-            // Exemplo simples de validação (usuário: admin, senha: 123456)
-            if (username === "admin" && password === "123456") {
-                errorMsg.innerHTML = ""; // Limpa mensagens de erro
-                hiddenContent.style.display = "block"; // Mostra o conteúdo oculto
-                //document.querySelector('.login-container').style.display = "none"; // Esconde o formulário de login
-                loginConteudo.style.display = "none";
-            } else {
-                errorMsg.innerHTML = "Usuário ou senha incorretos.";
-            }
-        }
 
     /*function gravarValorRota() {
             
@@ -310,8 +318,9 @@
       };
 
       console.log(data);
+
       
-      const url = 'https://script.google.com/macros/s/AKfycbxubuxaHPsQeTx0aY6jHA0FP2yMQO1bWikhvgvcC6nI9BdQDKf6KFFW_ApEFaXszyrlAw/exec';
+      const url = 'https://script.google.com/macros/s/AKfycbzu-uuaiQyLQ7uC3ULlVBu_-f2cvZeRALUSi-nIyOZbqUe0iE_z2Q-yg7C52M3BUyUfuQ/exec';
       fetch(url, {
                 method: 'POST',
                 mode: 'no-cors',  // Use 'no-cors' para evitar erros de CORS, mas pode impedir uma resposta direta
@@ -333,9 +342,16 @@
         document.querySelector('.enviarConferencia').addEventListener('click', enviarConferencia);
     });
 
+
+        //const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5QnTVROk22bdVq0bTwd70rj8nnC6ntnY7CNtu5-WSRhtjBn7BODx9M8Wnb9S7HzFl9A/exec?sheetName=CTLA'; // Substitua pela URL do Apps Script
         var URL_BASE = "https://script.google.com/macros/s/AKfycbw5QnTVROk22bdVq0bTwd70rj8nnC6ntnY7CNtu5-WSRhtjBn7BODx9M8Wnb9S7HzFl9A/exec?sheetName="
         
         const beep = new Audio('beep/beep.mp3');
+                
+        function testeVolMan(){
+            console.log("Teste volman: "+volMan);
+            
+        }
 
         // Variável para controlar se o som já foi habilitado pelo usuário
         let audioEnabled = false;
@@ -372,6 +388,8 @@
 
         }*/
 
+        
+
         function barcodeScanned() {
             if (audioEnabled) {
                 beep.play().catch(error => {
@@ -393,6 +411,8 @@
             audioEnabled = true; // Som habilitado após toque
             alert('Leitor de código de barras habilitado.');
         });
+
+        //var APPS_SCRIPT_URL = URL_BASE + PCAN;
 
         let validCodes = new Set(); // Armazenar os códigos válidos da planilha
         let manualCode = ''; // Armazenar o código manual inserido
@@ -469,15 +489,17 @@
         
         // Função para buscar os códigos da planilha via Apps Script
         async function fetchValidCodes() {
-            
+            //var PCAN = document.getElementById('sheet').value
             var PCAN = document.getElementById('selecao').value
             var APPS_SCRIPT_URL = URL_BASE + PCAN;
             
             try {
                 const response = await fetch(APPS_SCRIPT_URL);
                 const codes = await response.json();
+
+                console.log(codes);
                 
-                codes.forEach(code => validCodes.add(code.trim())); // Adicionar os códigos válidos ao conjunto
+                codes.forEach(code => validCodes.add(`${code.substring(0,12)}${code.substring(13,17)}`)); // Adicionar os códigos válidos ao conjunto
                 console.log("Códigos carregados:", validCodes);
 
                 // Exibir os códigos de volume encontrados na plan+9ilha
@@ -574,12 +596,12 @@
         let volBarra = [];
         // Função para adicionar o código lido à lista no HTML
         function addCodeToList(code) {
-            volBarra.push(code);
+            volBarra.push(`${code.substring(0,12)}/${code.substring(12,16)}`);
             const li = document.createElement('li');
             li.className = 'code-item';
             li.innerHTML = `
-                Volume Barra: ${code}
-                <button onclick="removeCode('${code}')">Excluir</button>
+                Volume Barra: ${code.substring(0,12)}/${code.substring(12,16)}
+                <button onclick="removeCode('${code.substring(0,12)}/${code.substring(12,16)}')">Excluir</button>
             `;
             resultList.appendChild(li);
         }
@@ -663,7 +685,7 @@
                 }else if (seq >9999){
                         alert('Valores acima de "9999" não são permitidos.');
                 } else {
-                    const fullCode = `${manualCode}${seq}`; // Concatena código e sequência
+                    const fullCode = `${manualCode}/${seq}`; // Concatena código e sequência
                     if (!detectedCodes.has(fullCode)) {
                         addCodeToListManual(fullCode); // Adiciona o código completo à lista
                         detectedCodes.add(fullCode); // Adiciona o código ao conjunto
