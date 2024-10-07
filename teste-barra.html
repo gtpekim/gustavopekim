@@ -185,22 +185,33 @@
 
     <script>
 
+        username = ['admin', 'pekim'];
+        nomeDoUser = ['Administrador', 'Pekim']
+        password = ['admin', 'pekim'];
+
+        let userLogado = '';    
+
         // Função para validar o login
         function login() {
-            var username = document.getElementById("username").value;
-            var password = document.getElementById("password").value;
+            var loginUser = document.getElementById("username").value;
+            var loginPass = document.getElementById("password").value;
             var errorMsg = document.getElementById("error-msg");;
             var divPrincipal = document.getElementById("principal");
             
 
             // Exemplo simples de validação (usuário: admin, senha: 123456)
-            if (username === "admin" && password === "123456") {
+            
+        for(i=0 ; i<username.length;i++){
+            if (loginUser == username[i] && loginPass == password[i]) {
                 errorMsg.innerHTML = ""; // Limpa mensagens de erro
                 divPrincipal.style.display = "block"; // Mostra o conteúdo oculto
                 document.querySelector('.login-container').style.display = "none"; // Esconde o formulário de login
+                userLogado = nomeDoUser[username.indexOf(loginUser)];
+                console.log(userLogado);
             } else {
                 errorMsg.innerHTML = "Usuário ou senha incorretos.";
             }
+        }
         }
     </script>
 
@@ -217,7 +228,7 @@
         <option value="sudeste">Sudeste</option>
         <option value="sul">Sul</option>
         <option value="centrooeste">Centro-Oeste</option>
-        <option value="aerea">Áerea Rio</option>
+        <option value="area">Área Rio</option>
     </select>
 
     <br><br>
@@ -314,13 +325,14 @@
         selecRota: selecRota,
         volMan: volMan,
         volBarra: volBarra,
+        userLogado: userLogado,
         
       };
 
       console.log(data);
 
       
-      const url = 'https://script.google.com/macros/s/AKfycbzu-uuaiQyLQ7uC3ULlVBu_-f2cvZeRALUSi-nIyOZbqUe0iE_z2Q-yg7C52M3BUyUfuQ/exec';
+      const url ='https://script.google.com/macros/s/AKfycbwij305Y4HIPmNRSlF-Ep32jeWBjnOPSKl3ab9Y2ehnc8B1Z7ibKBnRNg7FAaWyiv8YkQ/exec';
       fetch(url, {
                 method: 'POST',
                 mode: 'no-cors',  // Use 'no-cors' para evitar erros de CORS, mas pode impedir uma resposta direta
@@ -339,7 +351,7 @@
 
 
         document.addEventListener('DOMContentLoaded', function () {
-        document.querySelector('.enviarConferencia').addEventListener('click', enviarConferencia);
+        document.querySelector('.enviarConferencia').addEventListener('click', F);
     });
 
 
@@ -470,7 +482,7 @@
                     {texto: "PCAN-BR", valor: "PCAN-BR"},
                     {texto: "PCAN-CG", valor: "PCAN-CG"}
                 ];
-            } else if (rota === "aerea") {
+            } else if (rota === "area") {
                 opcoes = [
                     {texto: "CTLA", valor: "CTLA"},
                     {texto: "PCAN-AF", valor: "PCAN-AF"},
