@@ -178,7 +178,7 @@
     </div>
 
     <!-- Conteúdo que ficará oculto -->
-
+   
     <script>
 
         username = ['admin', 'pekim'];
@@ -193,8 +193,6 @@
             var loginPass = document.getElementById("password").value;
             var errorMsg = document.getElementById("error-msg");;
             var divPrincipal = document.getElementById("principal");
-        
-            // Exemplo simples de validação (usuário: admin, senha: 123456)
             
         for(i=0 ; i<username.length;i++){
             if (loginUser == username[i] && loginPass == password[i]) {
@@ -212,6 +210,7 @@
 
     <div id="principal">
     <h1>Leitor de Volumes com Código de Barras</h1>
+    
 
     <label for="rota">Escolha uma rota:</label>
     <select id="rota" name="rota" onchange="atualizarOpcoes()">
@@ -242,8 +241,7 @@
 
     <button id="stop-btn">Parar Leitura</button><br>
     <button id="show-manual-form-btn">Inserir Manual</button>
-    <button id="start-button">Clique para iniciar o leitor</button>
-    
+    <button id="start-button">Clique para iniciar o leitor</button>    
 
     <h2>Volumes no PDF:</h2>
     <ul id="volume-codes-list"></ul>
@@ -309,8 +307,8 @@
       };
 
       console.log(data);
-
-      const url ='https://script.google.com/macros/s/AKfycbytd5lClOo1Zmn-JbkeBl5GYhtBrjcOLynJFWFG52BH0O_DW6k8Mwe6lgHIgqze_qYCDQ/exec';
+      
+      const url ='https://script.google.com/macros/s/AKfycbwOKyHOSy2vjo_aQb9dNQDPHyqJ70FGE90XoQGcC-3GBvZh2rZqGJHojG62gwdwLKJ0_g/exec';
       fetch(url, {
                 method: 'POST',
                 mode: 'no-cors',  // Use 'no-cors' para evitar erros de CORS, mas pode impedir uma resposta direta
@@ -331,7 +329,6 @@
         document.querySelector('.enviarConferencia').addEventListener('click', F);
     });
 
-        //const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5QnTVROk22bdVq0bTwd70rj8nnC6ntnY7CNtu5-WSRhtjBn7BODx9M8Wnb9S7HzFl9A/exec?sheetName=CTLA'; // Substitua pela URL do Apps Script
         var URL_BASE = "https://script.google.com/macros/s/AKfycbw5QnTVROk22bdVq0bTwd70rj8nnC6ntnY7CNtu5-WSRhtjBn7BODx9M8Wnb9S7HzFl9A/exec?sheetName="
         
         const beep = new Audio('beep/beep.mp3');
@@ -370,6 +367,7 @@
 
         let validCodes = new Set(); // Armazenar os códigos válidos da planilha
         let manualCode = ''; // Armazenar o código manual inserido
+        
 
         function focarManual(){
             document.getElementById("manual-code-input").focus();
@@ -480,6 +478,8 @@
         }
 
         // Inicializando a busca dos códigos na planilha via Apps Script
+        
+
         const resultList = document.getElementById('result-list');
         const detectedCodes = new Set(); // Armazenar códigos Code 128 válidos
 
@@ -568,6 +568,8 @@
             `;
             resultList.appendChild(li);
         }
+
+
 
         // Função para remover um código da lista
         function removeCode(code) {
@@ -678,6 +680,7 @@
         );
         // Botão para parar manualmente
         document.getElementById('stop-btn').addEventListener('click', stopScanner);
+
 
         document.getElementById('retomar-btn').addEventListener('click', function(){
             const formIniciarScanner = document.getElementById('form-iniciar-scanner');
