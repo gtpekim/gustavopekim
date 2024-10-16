@@ -230,7 +230,7 @@
         <option value="">Selecione uma rota primeiro</option>
     </select>
 
-    <button onclick="fetchValidCodes();">Enviar</button>
+    <button onclick="fetchValidCodes();">Carregar PDF</button>
     
     <div id="interactive" class="viewport"></div>
 
@@ -319,8 +319,10 @@
             })
             .then(response => {
                 console.log("Dados enviados com sucesso.");
+                alert(`Conferência eviada com sucesso!`);
             })
             .catch(error => {
+                alert("Erro ao enviar dados: ", error);
                 console.error("Erro ao enviar dados: ", error);
             });
     }
@@ -455,12 +457,13 @@
 
                 // Exibir os códigos de volume encontrados na plan+9ilha
                 displayVolumeCodes(codes);
+                alert("PDF carregado com sucesso!");
             } catch (error) {
                 console.error("Erro ao buscar os códigos via Apps Script:", error);
                 console.log("PCAN: "+PCAN);
                 console.log("URL BASE: "+URL_BASE);
                 console.log("URL APPS: "+APPS_SCRIPT_URL);
-                alert("Erro ao carregar PCAN");
+                alert("Erro ao carregar PDF");
                 
             }
         }
