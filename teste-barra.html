@@ -534,9 +534,10 @@
                         addCodeToList(code); // Adiciona uma linha no HTML
                         detectedCodes.add(code); // Adiciona o código ao conjunto
                         barcodeScanned();
+                        alert(`Código ${code} adicionado!`);
                         //playBeepSound(); // Toca o som de bip
                     } else {
-                        alert(`Código ${code} já foi detectado.`);
+                        alert(`CÓDIGO ${code} JÁ DETECTADO!`);
                         console.log(`Código ${code} já foi detectado.`);
                     }
                 } else {
@@ -642,7 +643,7 @@
                         addCodeToListManual(fullCode); // Adiciona o código completo à lista
                         detectedCodes.add(fullCode); // Adiciona o código ao conjunto
                     } else {
-                        console.log(`Código ${fullCode} já está na lista de códigos válidos lidos.`);
+                        console.log(`Código ${fullCode} já foi adicionado!`);
                         alert(`Volume ${fullCode} já foi adicionado!`);
                             }
                 }});
